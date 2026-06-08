@@ -1,0 +1,570 @@
+
+
+<UserControl x:Class="UrbanDiagnosticCentre.Views.DashboardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:helpers="clr-namespace:UrbanDiagnosticCentre.Helpers">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
+        <helpers:InverseBoolConverter x:Key="InverseBool"/>
+
+        <Style x:Key="StatusBadge" TargetType="Border">
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="Padding" Value="8,3"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Background="{StaticResource BackgroundBrush}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="240"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- ===== Sidebar ===== -->
+        <Border Grid.Column="0" Background="{StaticResource SidebarBrush}">
+            <DockPanel>
+
+                <!-- App branding -->
+                <StackPanel DockPanel.Dock="Top" Margin="20,28,20,24">
+                    <TextBlock Text="Urban Diagnostic" FontSize="16" FontWeight="Bold"
+                               Foreground="White" TextWrapping="Wrap"/>
+                    <TextBlock Text="Centre" FontSize="16" FontWeight="Bold"
+                               Foreground="White"/>
+                    <Border Height="1" Background="#1AFFFFFF" Margin="0,14,0,0"/>
+                </StackPanel>
+
+                <!-- Nav buttons -->
+                <StackPanel DockPanel.Dock="Top" Margin="0,4,0,0">
+
+                    <Button Style="{StaticResource GhostButton}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#x2302;" FontSize="18" Width="28"
+                                       VerticalAlignment="Center" Foreground="#90CAF9"/>
+                            <TextBlock Text="Dashboard" FontSize="14" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button Style="{StaticResource GhostButton}"
+                            Command="{Binding NavigateToPatientsCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#x1F464;" FontSize="16" Width="28"
+                                       VerticalAlignment="Center"/>
+                            <TextBlock Text="Patients" FontSize="14" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button Style="{StaticResource GhostButton}"
+                            Command="{Binding NavigateToTestManagerCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#x1F9EA;" FontSize="16" Width="28"
+                                       VerticalAlignment="Center"/>
+                            <TextBlock Text="Tests" FontSize="14" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button Style="{StaticResource GhostButton}"
+                            Command="{Binding NavigateToBackupCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#x1F4BE;" FontSize="16" Width="28"
+                                       VerticalAlignment="Center"/>
+                            <TextBlock Text="Backup &amp; Restore" FontSize="14" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Settings: visible to all users (password change + admin settings) -->
+                    <Button Style="{StaticResource GhostButton}"
+                            Command="{Binding NavigateToSettingsCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#x2699;" FontSize="16" Width="28"
+                                       VerticalAlignment="Center"/>
+                            <TextBlock Text="Settings" FontSize="14"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Admin-only section -->
+                    <StackPanel Visibility="{Binding IsAdmin, Converter={StaticResource BoolToVisibility}}">
+                        <Border Height="1" Background="#1AFFFFFF" Margin="20,12"/>
+                        <TextBlock Text="ADMINISTRATION" FontSize="10" FontWeight="Bold"
+                                   Foreground="#5090CAF9" Margin="20,0,0,8"/>
+
+                        <Button Style="{StaticResource GhostButton}"
+                                Command="{Binding NavigateToMaintenanceCommand}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#x1F527;" FontSize="16" Width="28"
+                                           VerticalAlignment="Center"/>
+                                <TextBlock Text="Maintenance" FontSize="14"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+
+                <Rectangle DockPanel.Dock="Bottom" Height="0"/>
+
+                <!-- User profile card -->
+                <Border DockPanel.Dock="Bottom"
+                        Background="#15FFFFFF" CornerRadius="8"
+                        Padding="14,12" Margin="12,0,12,16">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Border Grid.Column="0" Width="36" Height="36" CornerRadius="18"
+                                Background="{StaticResource AccentBrush}" Margin="0,0,10,0">
+                            <TextBlock Text="{Binding UserInitials}" FontSize="12"
+                                       FontWeight="Bold" Foreground="White"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                        </Border>
+
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding WelcomeMessage}"
+                                       FontSize="11" FontWeight="SemiBold" Foreground="White"
+                                       TextTrimming="CharacterEllipsis"/>
+                            <TextBlock Text="{Binding UserRole}"
+                                       FontSize="11" Foreground="#90CAF9"/>
+                        </StackPanel>
+
+                        <Button Grid.Column="2"
+                                Command="{Binding LogoutCommand}"
+                                ToolTip="Sign Out"
+                                Width="30" Height="30"
+                                Background="Transparent" BorderThickness="0"
+                                Cursor="Hand">
+                            <TextBlock Text="&#x23FB;" FontSize="15" Foreground="#90CAF9"/>
+                        </Button>
+                    </Grid>
+                </Border>
+
+            </DockPanel>
+        </Border>
+
+        <!-- ===== Main content ===== -->
+        <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="36,30">
+
+                <!-- Page header -->
+                <Grid Margin="0,0,0,28">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="Dashboard" Style="{StaticResource HeadingLarge}"/>
+                        <TextBlock Text="{Binding CurrentDate}"
+                                   Style="{StaticResource BodyText}" Margin="0,4,0,0"/>
+                    </StackPanel>
+
+                    <Button Grid.Column="1"
+                            Command="{Binding NavigateToNewReportCommand}"
+                            Style="{StaticResource PrimaryButton}"
+                            Content="+ New Report" Width="130"
+                            VerticalAlignment="Center"/>
+                </Grid>
+
+                <!-- Setup / first-run warning banner -->
+                <Border BorderThickness="1" CornerRadius="6" Padding="16,12" Margin="0,0,0,16"
+                        Background="#FFF8E1" BorderBrush="#FFE082"
+                        Visibility="{Binding HasSetupWarning, Converter={StaticResource BoolToVisibility}}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="&#x2139;" FontSize="18"
+                                   Foreground="#F57F17" Margin="0,0,12,0"
+                                   VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="1" Text="{Binding SetupWarning}"
+                                   Foreground="#795548" FontSize="13"
+                                   VerticalAlignment="Center" TextWrapping="Wrap"/>
+                        <Button Grid.Column="2"
+                                Command="{Binding NavigateToSettingsCommand}"
+                                Style="{StaticResource PrimaryButton}"
+                                Height="32" Padding="12,0" FontSize="12"
+                                Content="Go to Settings" Margin="14,0,0,0"
+                                Visibility="{Binding IsAdmin, Converter={StaticResource BoolToVisibility}}"/>
+                    </Grid>
+                </Border>
+
+                <!-- Disk space warning banner -->
+                <Border Background="#FFF3E0" BorderBrush="#FFCC80" BorderThickness="1"
+                        CornerRadius="6" Padding="16,10" Margin="0,0,0,20"
+                        Visibility="{Binding HasDiskSpaceWarning, Converter={StaticResource BoolToVisibility}}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#x26A0;" FontSize="16"
+                                   Foreground="{StaticResource WarningBrush}"
+                                   Margin="0,0,10,0" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding DiskSpaceWarning}"
+                                   Foreground="{StaticResource WarningBrush}"
+                                   FontSize="13" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Section label -->
+                <TextBlock Text="TODAY'S SUMMARY" FontSize="11" FontWeight="Bold"
+                           Foreground="{StaticResource TextSecondaryBrush}"
+                           Margin="0,0,0,14"/>
+
+                <!-- Stat cards row -->
+                <Grid Margin="0,0,0,32">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0" Style="{StaticResource StatCard}" Margin="0,0,10,0">
+                        <StackPanel>
+                            <TextBlock Text="&#x1F9D1;&#x200D;&#x2695;&#xFE0F;" FontSize="28"
+                                       Margin="0,0,0,10"/>
+                            <TextBlock Text="{Binding TodayPatients}"
+                                       FontSize="36" FontWeight="Bold"
+                                       Foreground="{StaticResource PrimaryBrush}"/>
+                            <TextBlock Text="Patients Today"
+                                       Style="{StaticResource BodyText}" Margin="0,4,0,0"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Column="1" Style="{StaticResource StatCard}" Margin="5,0,5,0">
+                        <StackPanel>
+                            <TextBlock Text="&#x1F9EA;" FontSize="28" Margin="0,0,0,10"/>
+                            <TextBlock Text="{Binding TodayTests}"
+                                       FontSize="36" FontWeight="Bold"
+                                       Foreground="{StaticResource AccentBrush}"/>
+                            <TextBlock Text="Tests Today"
+                                       Style="{StaticResource BodyText}" Margin="0,4,0,0"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Column="2" Style="{StaticResource StatCard}" Margin="5,0,5,0">
+                        <StackPanel>
+                            <TextBlock Text="&#x1F4C4;" FontSize="28" Margin="0,0,0,10"/>
+                            <TextBlock Text="{Binding ReadyReports}"
+                                       FontSize="36" FontWeight="Bold"
+                                       Foreground="{StaticResource SuccessBrush}"/>
+                            <TextBlock Text="Reports Ready"
+                                       Style="{StaticResource BodyText}" Margin="0,4,0,0"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Column="3" Style="{StaticResource StatCard}" Margin="10,0,0,0">
+                        <StackPanel>
+                            <TextBlock Text="&#x23F3;" FontSize="28" Margin="0,0,0,10"/>
+                            <TextBlock Text="{Binding PendingReports}"
+                                       FontSize="36" FontWeight="Bold"
+                                       Foreground="{StaticResource WarningBrush}"/>
+                            <TextBlock Text="Pending Results"
+                                       Style="{StaticResource BodyText}" Margin="0,4,0,0"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <!-- Quick action cards -->
+                <TextBlock Text="QUICK ACTIONS" FontSize="11" FontWeight="Bold"
+                           Foreground="{StaticResource TextSecondaryBrush}"
+                           Margin="0,0,0,14"/>
+
+                <Grid Margin="0,0,0,32">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0" Background="{StaticResource CardBrush}"
+                            CornerRadius="10" Padding="20" Margin="0,0,8,0"
+                            Cursor="Hand">
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="10" ShadowDepth="1"
+                                              Color="#000000" Opacity="0.06"/>
+                        </Border.Effect>
+                        <Border.InputBindings>
+                            <MouseBinding MouseAction="LeftClick"
+                                          Command="{Binding NavigateToNewReportCommand}"/>
+                        </Border.InputBindings>
+                        <StackPanel HorizontalAlignment="Center">
+                            <TextBlock Text="+" FontSize="40" FontWeight="Light"
+                                       Foreground="{StaticResource PrimaryBrush}"
+                                       HorizontalAlignment="Center" Margin="0,0,0,8"/>
+                            <TextBlock Text="New Report"
+                                       Style="{StaticResource HeadingMedium}"
+                                       HorizontalAlignment="Center" FontSize="16"
+                                       Foreground="{StaticResource PrimaryBrush}"/>
+                            <TextBlock Text="Register patient &amp; create report"
+                                       Style="{StaticResource BodyText}"
+                                       HorizontalAlignment="Center" Margin="0,4,0,0" FontSize="12"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Column="1" Background="#FFF8E1"
+                            CornerRadius="10" Padding="20" Margin="4,0,4,0"
+                            Cursor="Hand">
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="10" ShadowDepth="1"
+                                              Color="#000000" Opacity="0.06"/>
+                        </Border.Effect>
+                        <Border.InputBindings>
+                            <MouseBinding MouseAction="LeftClick"
+                                          Command="{Binding NavigateToBackupCommand}"/>
+                        </Border.InputBindings>
+                        <StackPanel HorizontalAlignment="Center">
+                            <TextBlock Text="&#x1F4BE;" FontSize="32"
+                                       HorizontalAlignment="Center" Margin="0,0,0,8"/>
+                            <TextBlock Text="Backup &amp; Restore"
+                                       Style="{StaticResource HeadingMedium}"
+                                       HorizontalAlignment="Center" FontSize="16"
+                                       Foreground="#E65100"/>
+                            <TextBlock Text="Backup and restore all data"
+                                       Style="{StaticResource BodyText}"
+                                       HorizontalAlignment="Center" Margin="0,4,0,0" FontSize="12"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Column="2" Background="#EDE7F6"
+                            CornerRadius="10" Padding="20" Margin="4,0,4,0"
+                            Cursor="Hand">
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="10" ShadowDepth="1"
+                                              Color="#000000" Opacity="0.06"/>
+                        </Border.Effect>
+                        <Border.InputBindings>
+                            <MouseBinding MouseAction="LeftClick"
+                                          Command="{Binding NavigateToHistoryCommand}"/>
+                        </Border.InputBindings>
+                        <StackPanel HorizontalAlignment="Center">
+                            <TextBlock Text="&#x1F4CB;" FontSize="32"
+                                       HorizontalAlignment="Center" Margin="0,0,0,8"/>
+                            <TextBlock Text="Report History"
+                                       Style="{StaticResource HeadingMedium}"
+                                       HorizontalAlignment="Center" FontSize="16"
+                                       Foreground="#6A1B9A"/>
+                            <TextBlock Text="Search &amp; view past reports"
+                                       Style="{StaticResource BodyText}"
+                                       HorizontalAlignment="Center" Margin="0,4,0,0" FontSize="12"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Column="3" Background="#E8F5E9"
+                            CornerRadius="10" Padding="20" Margin="8,0,0,0"
+                            Cursor="Hand">
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="10" ShadowDepth="1"
+                                              Color="#000000" Opacity="0.06"/>
+                        </Border.Effect>
+                        <Border.InputBindings>
+                            <MouseBinding MouseAction="LeftClick"
+                                          Command="{Binding NavigateToTestManagerCommand}"/>
+                        </Border.InputBindings>
+                        <StackPanel HorizontalAlignment="Center">
+                            <TextBlock Text="&#x1F9EA;" FontSize="32"
+                                       HorizontalAlignment="Center" Margin="0,0,0,8"/>
+                            <TextBlock Text="Test Manager"
+                                       Style="{StaticResource HeadingMedium}"
+                                       HorizontalAlignment="Center" FontSize="16"
+                                       Foreground="{StaticResource SuccessBrush}"/>
+                            <TextBlock Text="Manage test definitions"
+                                       Style="{StaticResource BodyText}"
+                                       HorizontalAlignment="Center" Margin="0,4,0,0" FontSize="12"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <!-- Recent Reports -->
+                <Border Background="{StaticResource CardBrush}"
+                        CornerRadius="10" Padding="24">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="10" ShadowDepth="1"
+                                          Color="#000000" Opacity="0.06"/>
+                    </Border.Effect>
+                    <StackPanel>
+
+                        <!-- Section header -->
+                        <Grid Margin="0,0,0,16">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Recent Reports"
+                                       Style="{StaticResource HeadingMedium}"/>
+                            <Button Grid.Column="1"
+                                    Command="{Binding NavigateToNewReportCommand}"
+                                    Style="{StaticResource PrimaryButton}"
+                                    Height="36" Padding="16,0" FontSize="13"
+                                    Content="+ New Report"/>
+                        </Grid>
+
+                        <Border Height="1" Background="{StaticResource DividerBrush}"
+                                Margin="0,0,0,0"/>
+
+                        <!-- Empty state -->
+                        <StackPanel Visibility="{Binding HasNoRecentReports, Converter={StaticResource BoolToVisibility}}"
+                                    Margin="0,24,0,8" HorizontalAlignment="Center">
+                            <TextBlock Text="No reports yet." FontSize="15"
+                                       Foreground="{StaticResource TextSecondaryBrush}"
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="Create the first report using the button above."
+                                       FontSize="12"
+                                       Foreground="{StaticResource TextSecondaryBrush}"
+                                       HorizontalAlignment="Center" Margin="0,6,0,0"/>
+                        </StackPanel>
+
+                        <!-- Column headers (hidden when list is empty) -->
+                        <Grid Margin="0,0,0,0">
+                            <Grid.Style>
+                                <Style TargetType="Grid">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding HasNoRecentReports}" Value="True">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Grid.Style>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="165"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="130"/>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="50"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Report Code"
+                                       FontSize="11" FontWeight="SemiBold"
+                                       Foreground="{StaticResource TextSecondaryBrush}"
+                                       Padding="0,10,0,6"/>
+                            <TextBlock Grid.Column="1" Text="Patient"
+                                       FontSize="11" FontWeight="SemiBold"
+                                       Foreground="{StaticResource TextSecondaryBrush}"
+                                       Padding="0,10,0,6"/>
+                            <TextBlock Grid.Column="2" Text="Test Date"
+                                       FontSize="11" FontWeight="SemiBold"
+                                       Foreground="{StaticResource TextSecondaryBrush}"
+                                       Padding="0,10,0,6"/>
+                            <TextBlock Grid.Column="3" Text="Status"
+                                       FontSize="11" FontWeight="SemiBold"
+                                       Foreground="{StaticResource TextSecondaryBrush}"
+                                       Padding="0,10,0,6"/>
+                        </Grid>
+
+                        <!-- Report rows -->
+                        <ItemsControl ItemsSource="{Binding RecentReports}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BorderBrush="{StaticResource DividerBrush}"
+                                            BorderThickness="0,1,0,0">
+                                        <Grid Height="52">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="165"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="130"/>
+                                                <ColumnDefinition Width="100"/>
+                                                <ColumnDefinition Width="50"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock Grid.Column="0"
+                                                       Text="{Binding ReportCode}"
+                                                       FontSize="13" FontWeight="SemiBold"
+                                                       Foreground="{StaticResource PrimaryBrush}"
+                                                       VerticalAlignment="Center"
+                                                       FontFamily="Consolas"/>
+
+                                            <TextBlock Grid.Column="1"
+                                                       Text="{Binding PatientName}"
+                                                       FontSize="13"
+                                                       Foreground="{StaticResource TextPrimaryBrush}"
+                                                       VerticalAlignment="Center"
+                                                       TextTrimming="CharacterEllipsis"
+                                                       Margin="0,0,12,0"/>
+
+                                            <TextBlock Grid.Column="2"
+                                                       Text="{Binding TestDate, StringFormat='dd MMM yyyy'}"
+                                                       FontSize="13"
+                                                       Foreground="{StaticResource TextSecondaryBrush}"
+                                                       VerticalAlignment="Center"/>
+
+                                            <!-- Status badge -->
+                                            <Border Grid.Column="3" VerticalAlignment="Center"
+                                                    CornerRadius="4" Padding="8,4" HorizontalAlignment="Left">
+                                                <Border.Style>
+                                                    <Style TargetType="Border">
+                                                        <Setter Property="Background" Value="#E3F2FD"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Status}" Value="Completed">
+                                                                <Setter Property="Background" Value="#E8F5E9"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Status}" Value="Printed">
+                                                                <Setter Property="Background" Value="#E8F5E9"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Status}" Value="Draft">
+                                                                <Setter Property="Background" Value="#FFF8E1"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Border.Style>
+                                                <TextBlock Text="{Binding Status}" FontSize="12" FontWeight="SemiBold">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Status}" Value="Completed">
+                                                                    <Setter Property="Foreground" Value="{StaticResource SuccessBrush}"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Status}" Value="Printed">
+                                                                    <Setter Property="Foreground" Value="{StaticResource SuccessBrush}"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Status}" Value="Draft">
+                                                                    <Setter Property="Foreground" Value="{StaticResource WarningBrush}"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </Border>
+
+                                            <!-- Print button (only for Completed/Printed) -->
+                                            <Button Grid.Column="4"
+                                                    Command="{Binding DataContext.PrintReportCommand,
+                                                        RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                    CommandParameter="{Binding}"
+                                                    ToolTip="Print / Export PDF"
+                                                    Width="32" Height="32"
+                                                    Background="Transparent" BorderThickness="0"
+                                                    Cursor="Hand" VerticalAlignment="Center">
+                                                <Button.Style>
+                                                    <Style TargetType="Button">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Status}" Value="Completed">
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Status}" Value="Printed">
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                                <TextBlock Text="&#x1F5A8;" FontSize="16"
+                                                           Foreground="{StaticResource TextSecondaryBrush}"/>
+                                            </Button>
+
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                    </StackPanel>
+                </Border>
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

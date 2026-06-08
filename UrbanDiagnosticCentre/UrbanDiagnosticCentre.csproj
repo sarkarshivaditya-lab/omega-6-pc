@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>UrbanDiagnosticCentre</RootNamespace>
+    <AssemblyName>UrbanDiagnosticCentre</AssemblyName>
+    <StartupObject>UrbanDiagnosticCentre.App</StartupObject>
+
+    <!-- Application identity -->
+    <AssemblyTitle>Urban Diagnostic Centre</AssemblyTitle>
+    <AssemblyDescription>Patient registration and diagnostic report management system</AssemblyDescription>
+    <Company>Urban Diagnostic Centre</Company>
+    <Product>Urban Diagnostic Centre</Product>
+    <Copyright>Copyright © 2025 Urban Diagnostic Centre</Copyright>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <Version>1.0.0</Version>
+    <!-- ApplicationIcon>Assets\app.ico</ApplicationIcon -->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.5">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+    <PackageReference Include="QuestPDF" Version="2024.10.4" />
+  </ItemGroup>
+
+</Project>
