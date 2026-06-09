@@ -1,0 +1,11 @@
+{
+  "timestamp": "2026-06-09T02:38:19.078Z",
+  "projectRoot": "/Users/shivadityasarkar/Desktop/udc register app",
+  "structure": {
+    "hasPackageJson": false,
+    "hasTsConfig": false,
+    "hasClaudeConfig": true,
+    "hasClaudeFlow": true
+  },
+  "scannedAt": 1780972699078
+}

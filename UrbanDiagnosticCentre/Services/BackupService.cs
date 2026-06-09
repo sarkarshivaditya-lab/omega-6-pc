@@ -74,7 +74,7 @@ public class BackupService
             {
                 foreach (var file in Directory.GetFiles(ReportsRoot, "*.pdf", SearchOption.AllDirectories))
                 {
-                    var relative = Path.GetRelativePath(AppDataFolder, file).Replace('\\', '/');
+                    var relative = "Reports/" + Path.GetRelativePath(ReportsRoot, file).Replace('\\', '/');
                     zip.CreateEntryFromFile(file, relative, CompressionLevel.Fastest);
                     pdfCount++;
                 }
