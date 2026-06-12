@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Windows.Input;
 using UrbanDiagnosticCentre.Helpers;
 using UrbanDiagnosticCentre.Services;
 
@@ -35,7 +36,11 @@ public class MaintenanceViewModel : BaseViewModel
     public bool IsWorking
     {
         get => _isWorking;
-        private set => SetProperty(ref _isWorking, value);
+        private set
+        {
+            if (SetProperty(ref _isWorking, value))
+                CommandManager.InvalidateRequerySuggested();
+        }
     }
 
     // ── Result details (file lists for orphan/missing PDF scans) ──────────────
@@ -58,11 +63,11 @@ public class MaintenanceViewModel : BaseViewModel
         _authService        = authService;
         _navigationService  = navigationService;
 
-        IntegrityCheckCommand  = new RelayCommand(async _ => await RunAsync(_maintenanceService.RunIntegrityCheck,  "Checking database integrity…"));
-        FindMissingPdfsCommand = new RelayCommand(async _ => await RunAsync(_maintenanceService.FindMissingPdfs,    "Scanning for missing PDF files…"));
-        FindOrphanPdfsCommand  = new RelayCommand(async _ => await RunAsync(_maintenanceService.FindOrphanPdfs,     "Scanning for orphan PDF files…"));
-        VacuumCommand          = new RelayCommand(async _ => await RunAsync(_maintenanceService.RunVacuum,          "Vacuuming database…"));
-        BackCommand            = new RelayCommand(_ => _navigationService.NavigateTo<DashboardViewModel>());
+        IntegrityCheckCommand  = new RelayCommand(async _ => await RunAsync(_maintenanceService.RunIntegrityCheck,  "Checking database integrity…"),  _ => !_isWorking);
+        FindMissingPdfsCommand = new RelayCommand(async _ => await RunAsync(_maintenanceService.FindMissingPdfs,    "Scanning for missing PDF files…"), _ => !_isWorking);
+        FindOrphanPdfsCommand  = new RelayCommand(async _ => await RunAsync(_maintenanceService.FindOrphanPdfs,     "Scanning for orphan PDF files…"),  _ => !_isWorking);
+        VacuumCommand          = new RelayCommand(async _ => await RunAsync(_maintenanceService.RunVacuum,          "Vacuuming database…"),             _ => !_isWorking);
+        BackCommand            = new RelayCommand(_ => _navigationService.NavigateTo<DashboardViewModel>(),         _ => !_isWorking);
     }
 
     // ── Internals ─────────────────────────────────────────────────────────────
