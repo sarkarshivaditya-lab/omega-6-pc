@@ -1,3 +1,4 @@
+using System.Windows.Input;
 using UrbanDiagnosticCentre.Helpers;
 using UrbanDiagnosticCentre.Models;
 using UrbanDiagnosticCentre.Services;
@@ -142,7 +143,11 @@ public class SettingsViewModel : BaseViewModel
             return (false, "New password must be different from the current password.");
 
         var ok = await _authService.ChangePasswordAsync(current, newPass);
-        if (ok) OnPropertyChanged(nameof(IsUsingDefaultPassword));
+        if (ok)
+        {
+            OnPropertyChanged(nameof(IsUsingDefaultPassword));
+            CommandManager.InvalidateRequerySuggested();
+        }
         return ok
             ? (true,  "Password changed successfully.")
             : (false, "Current password is incorrect. Please try again.");
@@ -195,7 +200,7 @@ public class SettingsViewModel : BaseViewModel
         _navigationService = navigationService;
 
         SaveCommand              = new RelayCommand(ExecuteSave, _ => IsAdmin);
-        BackCommand              = new RelayCommand(_ => _navigationService.NavigateTo<DashboardViewModel>());
+        BackCommand              = new RelayCommand(_ => _navigationService.NavigateTo<DashboardViewModel>(), _ => !_authService.IsUsingDefaultPassword);
         BrowseLogoCommand          = new RelayCommand(_ => { });
         BrowseReportsFolderCommand = new RelayCommand(_ => { });
         BrowseBackupsFolderCommand = new RelayCommand(_ => { });

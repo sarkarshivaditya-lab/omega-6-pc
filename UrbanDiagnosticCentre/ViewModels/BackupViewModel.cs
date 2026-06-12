@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
+using System.Windows.Input;
 using UrbanDiagnosticCentre.Helpers;
 using UrbanDiagnosticCentre.Models;
 using UrbanDiagnosticCentre.Services;
@@ -59,7 +60,11 @@ public class BackupViewModel : BaseViewModel
     public bool IsWorking
     {
         get => _isWorking;
-        private set => SetProperty(ref _isWorking, value);
+        private set
+        {
+            if (SetProperty(ref _isWorking, value))
+                CommandManager.InvalidateRequerySuggested();
+        }
     }
 
     // ── Recent backups ────────────────────────────────────────────────────────
@@ -78,10 +83,10 @@ public class BackupViewModel : BaseViewModel
         _navigationService  = navigationService;
         _backupDestinationFolder = _backupService.GetDefaultBackupFolder();
 
-        CreateBackupCommand     = new RelayCommand(async _ => await ExecuteCreateBackupAsync());
-        RestoreBackupCommand    = new RelayCommand(async _ => await ExecuteRestoreAsync());
+        CreateBackupCommand     = new RelayCommand(async _ => await ExecuteCreateBackupAsync(), _ => !_isWorking);
+        RestoreBackupCommand    = new RelayCommand(async _ => await ExecuteRestoreAsync(),       _ => !_isWorking);
         OpenBackupFolderCommand = new RelayCommand(ExecuteOpenFolder);
-        BackCommand             = new RelayCommand(_ => _navigationService.NavigateTo<DashboardViewModel>());
+        BackCommand             = new RelayCommand(_ => _navigationService.NavigateTo<DashboardViewModel>(), _ => !_isWorking);
 
         RefreshRecentBackups();
     }

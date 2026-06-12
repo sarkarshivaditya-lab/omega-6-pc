@@ -61,12 +61,20 @@ public class LoginViewModel : BaseViewModel
 
             if (await _authService.LoginAsync(Username, password))
             {
-                _navigationService.NavigateTo<DashboardViewModel>();
+                if (_authService.IsUsingDefaultPassword)
+                    _navigationService.NavigateTo<SettingsViewModel>();
+                else
+                    _navigationService.NavigateTo<DashboardViewModel>();
             }
             else
             {
                 ErrorMessage = "Invalid username or password. Please try again.";
             }
+        }
+        catch (Exception ex)
+        {
+            ErrorLoggingService.Log(ex, "Login");
+            ErrorMessage = "Unable to sign in. Please try again or contact your administrator.";
         }
         finally
         {
