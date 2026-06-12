@@ -127,7 +127,7 @@ public class SettingsViewModel : BaseViewModel
 
     // Called from code-behind (PasswordBox values cannot be bound in XAML).
     // Returns (success, message) so the code-behind can clear fields on success.
-    public (bool Success, string Message) TryChangePassword(
+    public async Task<(bool Success, string Message)> TryChangePasswordAsync(
         string current, string newPass, string confirm)
     {
         if (string.IsNullOrWhiteSpace(current))
@@ -141,7 +141,7 @@ public class SettingsViewModel : BaseViewModel
         if (newPass == current)
             return (false, "New password must be different from the current password.");
 
-        var ok = _authService.ChangePassword(current, newPass);
+        var ok = await _authService.ChangePasswordAsync(current, newPass);
         if (ok) OnPropertyChanged(nameof(IsUsingDefaultPassword));
         return ok
             ? (true,  "Password changed successfully.")

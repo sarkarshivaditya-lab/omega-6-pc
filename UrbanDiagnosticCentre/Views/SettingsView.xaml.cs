@@ -55,11 +55,11 @@ public partial class SettingsView : UserControl
             vm.BackupsRootPath = dialog.FolderName;
     }
 
-    private void ChangePassword_Click(object sender, RoutedEventArgs e)
+    private async void ChangePassword_Click(object sender, RoutedEventArgs e)
     {
         if (DataContext is not SettingsViewModel vm) return;
 
-        var (success, message) = vm.TryChangePassword(
+        var (success, message) = await vm.TryChangePasswordAsync(
             PwCurrent.Password,
             PwNew.Password,
             PwConfirm.Password);

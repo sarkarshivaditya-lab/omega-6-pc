@@ -39,7 +39,7 @@ public class LoginViewModel : BaseViewModel
         LoginCommand = new RelayCommand(ExecuteLogin, _ => !IsLoggingIn);
     }
 
-    private void ExecuteLogin(object? parameter)
+    private async void ExecuteLogin(object? parameter)
     {
         var password = parameter as string ?? string.Empty;
         ErrorMessage = string.Empty;
@@ -59,7 +59,7 @@ public class LoginViewModel : BaseViewModel
                 return;
             }
 
-            if (_authService.Login(Username, password))
+            if (await _authService.LoginAsync(Username, password))
             {
                 _navigationService.NavigateTo<DashboardViewModel>();
             }
