@@ -81,6 +81,18 @@
                     </Button>
 
                     <Button Style="{StaticResource GhostButton}"
+                            Command="{Binding NavigateToAccountsCommand}"
+                            Margin="0,2">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE7BF;" FontSize="15" Width="26"
+                                       FontFamily="Segoe MDL2 Assets"
+                                       VerticalAlignment="Center"/>
+                            <TextBlock Text="Accounts" FontSize="13"
+                                       FontFamily="Segoe UI" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button Style="{StaticResource GhostButton}"
                             Command="{Binding NavigateToBackupCommand}"
                             Margin="0,2">
                         <StackPanel Orientation="Horizontal">

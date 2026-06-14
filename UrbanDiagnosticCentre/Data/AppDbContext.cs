@@ -13,7 +13,8 @@ public class AppDbContext : DbContext
     public DbSet<Report> Reports { get; set; }
     public DbSet<ReportEntry> ReportEntries { get; set; }
     public DbSet<BackupRecord> BackupRecords { get; set; }
-    public DbSet<AppSettings> AppSettings   { get; set; }
+    public DbSet<AppSettings>          AppSettings           { get; set; }
+    public DbSet<FinancialTransaction> FinancialTransactions { get; set; }
 
     public AppDbContext() { }
 
@@ -126,6 +127,32 @@ public class AppDbContext : DbContext
             .Property(tp => tp.IsActive).HasDefaultValue(true);
         modelBuilder.Entity<TestPrice>()
             .Property(tp => tp.SortOrder).HasDefaultValue(0);
+
+        // ── FinancialTransactions ─────────────────────────────────────────────
+        modelBuilder.Entity<FinancialTransaction>()
+            .Property(ft => ft.Type)
+            .HasConversion<string>()
+            .HasDefaultValue(TransactionType.Expense);
+
+        modelBuilder.Entity<FinancialTransaction>()
+            .Property(ft => ft.Amount)
+            .HasColumnType("TEXT");
+
+        modelBuilder.Entity<FinancialTransaction>()
+            .Property(ft => ft.TaxAmount)
+            .HasColumnType("TEXT");
+
+        modelBuilder.Entity<FinancialTransaction>()
+            .HasOne(ft => ft.CreatedByUser)
+            .WithMany()
+            .HasForeignKey(ft => ft.CreatedByUserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<FinancialTransaction>()
+            .HasIndex(ft => ft.TransactionDate);
+
+        modelBuilder.Entity<FinancialTransaction>()
+            .HasIndex(ft => ft.Type);
 
         // ── AppSettings ──────────────────────────────────────────────────────
         modelBuilder.Entity<AppSettings>()

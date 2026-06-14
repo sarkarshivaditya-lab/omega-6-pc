@@ -26,6 +26,7 @@ public partial class App : Application
     private PrintService          _printService          = null!;
     private BackupService         _backupService         = null!;
     private MaintenanceService    _maintenanceService    = null!;
+    private AccountingService     _accountingService     = null!;
 
     protected override void OnStartup(StartupEventArgs e)
     {
@@ -76,6 +77,7 @@ public partial class App : Application
         _printService          = new PrintService(_reportService);
         _backupService         = new BackupService(_db, _settingsService);
         _maintenanceService    = new MaintenanceService(_db, _settingsService);
+        _accountingService     = new AccountingService(_db);
         _navigationService     = new NavigationService(CreateViewModel);
 
         RunStartupDiagnostics();
@@ -130,6 +132,9 @@ public partial class App : Application
 
         if (type == typeof(MaintenanceViewModel))
             return new MaintenanceViewModel(_maintenanceService, _authService, _navigationService);
+
+        if (type == typeof(AccountsViewModel))
+            return new AccountsViewModel(_accountingService, _settingsService, _authService, _navigationService);
 
         throw new InvalidOperationException($"No factory registered for ViewModel: {type.Name}");
     }
