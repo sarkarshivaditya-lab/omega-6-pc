@@ -466,7 +466,7 @@
 
                                     <!-- Table header -->
                                     <Grid DockPanel.Dock="Top" Background="{StaticResource SurfaceBrush}"
-                                          BorderBrush="{StaticResource DividerBrush}" Height="34">
+                                          Height="34">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="190"/>

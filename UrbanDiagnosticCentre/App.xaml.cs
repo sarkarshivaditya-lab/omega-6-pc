@@ -1,5 +1,6 @@
 using System.IO;
 using System.Windows;
+using Microsoft.EntityFrameworkCore;
 using UrbanDiagnosticCentre.Data;
 using UrbanDiagnosticCentre.Helpers;
 using UrbanDiagnosticCentre.Services;
