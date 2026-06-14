@@ -58,6 +58,10 @@ public class AppDbContext : DbContext
             .HasDefaultValue(ReportStatus.Draft);
 
         modelBuilder.Entity<Report>()
+            .Property(r => r.PdfVersion)
+            .HasDefaultValue(0);
+
+        modelBuilder.Entity<Report>()
             .HasIndex(r => r.ReportCode)
             .IsUnique();
 
@@ -99,6 +103,14 @@ public class AppDbContext : DbContext
             .HasForeignKey(re => re.TestDefinitionId)
             .OnDelete(DeleteBehavior.Restrict);
 
+        // ── BackupRecords ─────────────────────────────────────────────────────
+        modelBuilder.Entity<BackupRecord>()
+            .Property(b => b.BackupSizeBytes).HasDefaultValue(0L);
+        modelBuilder.Entity<BackupRecord>()
+            .Property(b => b.IsAutoBackup).HasDefaultValue(false);
+        modelBuilder.Entity<BackupRecord>()
+            .Property(b => b.Note).HasDefaultValue("");
+
         // ── TestPrices ───────────────────────────────────────────────────────
         modelBuilder.Entity<TestPrice>()
             .HasOne(tp => tp.TestDefinition)
@@ -110,9 +122,30 @@ public class AppDbContext : DbContext
             .HasIndex(tp => new { tp.TestDefinitionId, tp.TierName })
             .IsUnique();
 
+        modelBuilder.Entity<TestPrice>()
+            .Property(tp => tp.IsActive).HasDefaultValue(true);
+        modelBuilder.Entity<TestPrice>()
+            .Property(tp => tp.SortOrder).HasDefaultValue(0);
+
         // ── AppSettings ──────────────────────────────────────────────────────
         modelBuilder.Entity<AppSettings>()
             .Property(s => s.Id)
             .ValueGeneratedNever();
+        modelBuilder.Entity<AppSettings>()
+            .Property(s => s.CentreName).HasDefaultValue("Urban Diagnostic Centre");
+        modelBuilder.Entity<AppSettings>()
+            .Property(s => s.CentreAddress).HasDefaultValue("");
+        modelBuilder.Entity<AppSettings>()
+            .Property(s => s.CentrePhone).HasDefaultValue("");
+        modelBuilder.Entity<AppSettings>()
+            .Property(s => s.CentreEmail).HasDefaultValue("");
+        modelBuilder.Entity<AppSettings>()
+            .Property(s => s.GstTaxId).HasDefaultValue("");
+        modelBuilder.Entity<AppSettings>()
+            .Property(s => s.SignatureFooterText).HasDefaultValue("");
+        modelBuilder.Entity<AppSettings>()
+            .Property(s => s.WatermarkText).HasDefaultValue("");
+        modelBuilder.Entity<AppSettings>()
+            .Property(s => s.DefaultPriceTier).HasDefaultValue("");
     }
 }
