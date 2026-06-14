@@ -18,10 +18,16 @@ public class AppSettings
     // ── Pricing ───────────────────────────────────────────────────────────────
     public string DefaultPriceTier { get; set; } = string.Empty;
 
-    // ── PDF branding (future-ready) ───────────────────────────────────────────
+    // ── PDF branding ─────────────────────────────────────────────────────────
     public string GstTaxId            { get; set; } = string.Empty;
     public string SignatureFooterText { get; set; } = string.Empty;
     public string WatermarkText       { get; set; } = string.Empty;
+
+    // ── Signatures ────────────────────────────────────────────────────────────
+    public string  LabInchargeName                    { get; set; } = string.Empty;
+    public string? LabInchargeSignaturePath           { get; set; }
+    public string  ConsultantPathologistName          { get; set; } = string.Empty;
+    public string? ConsultantPathologistSignaturePath { get; set; }
 
     // ── Metadata ──────────────────────────────────────────────────────────────
     public DateTime? UpdatedAt { get; set; }

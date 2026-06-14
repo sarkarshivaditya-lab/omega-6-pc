@@ -147,5 +147,9 @@ public class AppDbContext : DbContext
             .Property(s => s.WatermarkText).HasDefaultValue("");
         modelBuilder.Entity<AppSettings>()
             .Property(s => s.DefaultPriceTier).HasDefaultValue("");
+        modelBuilder.Entity<AppSettings>()
+            .Property(s => s.LabInchargeName).HasDefaultValue("");
+        modelBuilder.Entity<AppSettings>()
+            .Property(s => s.ConsultantPathologistName).HasDefaultValue("");
     }
 }

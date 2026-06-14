@@ -137,7 +137,6 @@ public static class PdfReportService
                        {
                            InfoRow(d, "Report Code", report.ReportCode);
                            InfoRow(d, "Test Date",   report.TestDate.ToString("dd MMM yyyy, hh:mm tt"));
-                           InfoRow(d, "Status",      report.Status.ToString());
                            if (!string.IsNullOrEmpty(report.PriceTierName))
                                InfoRow(d, "Price Category", report.PriceTierName);
                        });
@@ -210,13 +209,32 @@ public static class PdfReportService
                 }
             });
 
-            // Disclaimer / signature footer
+            // Disclaimer + dual signature section
             var disclaimer = string.IsNullOrEmpty(settings.SignatureFooterText)
-                ? "This report is computer generated and is valid without a signature. For queries contact the laboratory."
+                ? "This report is computer generated. For any queries, please contact the laboratory."
                 : settings.SignatureFooterText;
 
             col.Item().PaddingTop(24).BorderTop(1).BorderColor("#CFD8DC").PaddingTop(10)
-               .Text(disclaimer).FontSize(8).FontColor("#9E9E9E").Italic();
+               .Column(sigSection =>
+               {
+                   sigSection.Item()
+                       .Text(disclaimer).FontSize(8).FontColor("#9E9E9E").Italic();
+
+                   sigSection.Item().PaddingTop(20).Row(row =>
+                   {
+                       row.RelativeItem().Element(c => ComposeSignatureBlock(c,
+                           name:        settings.LabInchargeName,
+                           designation: "Lab Incharge",
+                           imagePath:   settings.LabInchargeSignaturePath));
+
+                       row.ConstantItem(40);
+
+                       row.RelativeItem().Element(c => ComposeSignatureBlock(c,
+                           name:        settings.ConsultantPathologistName,
+                           designation: "Consultant Pathologist",
+                           imagePath:   settings.ConsultantPathologistSignaturePath));
+                   });
+               });
         });
     }
 
@@ -257,6 +275,35 @@ public static class PdfReportService
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────
+
+    // Renders one signature block (image optional, name optional, designation always shown).
+    // Stage 1: typed name + designation text (always rendered).
+    // Stage 2: digital signature image overlay above text (rendered when imagePath is set and readable).
+    private static void ComposeSignatureBlock(IContainer c, string name, string designation, string? imagePath)
+    {
+        c.Column(col =>
+        {
+            // Stage 2 – optional signature image, aspect-ratio-preserved, centered
+            if (!string.IsNullOrEmpty(imagePath) && File.Exists(imagePath))
+            {
+                try
+                {
+                    var imgBytes = File.ReadAllBytes(imagePath);
+                    col.Item().MaxHeight(60).AlignCenter()
+                       .Image(imgBytes, ImageScaling.FitArea);
+                }
+                catch { /* unreadable — skip gracefully */ }
+            }
+
+            // Stage 1 – typed name (omit row if unconfigured)
+            if (!string.IsNullOrWhiteSpace(name))
+                col.Item().AlignCenter().Text(name).FontSize(10).Bold();
+
+            // Designation label always shown
+            col.Item().AlignCenter().Text(designation).FontSize(9).FontColor("#757575");
+        });
+    }
+
     private static void InfoRow(ColumnDescriptor col, string label, string value)
     {
         col.Item().PaddingBottom(4).Row(row =>

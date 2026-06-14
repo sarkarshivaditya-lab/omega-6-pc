@@ -3,15 +3,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UrbanDiagnosticCentre.Data;
 
 namespace UrbanDiagnosticCentre.Data.Migrations;
 
 [DbContext(typeof(AppDbContext))]
-partial class AppDbContextModelSnapshot : ModelSnapshot
+[Migration("20260614000001_AddSignatureSettings")]
+partial class AddSignatureSettings
 {
-    protected override void BuildModel(ModelBuilder modelBuilder)
+    protected override void BuildTargetModel(ModelBuilder modelBuilder)
     {
 #pragma warning disable 612, 618
         modelBuilder.HasAnnotation("ProductVersion", "9.0.5");
@@ -114,19 +116,6 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
             b.ToTable("ReportEntries");
         });
 
-        modelBuilder.Entity("UrbanDiagnosticCentre.Models.TestPrice", b =>
-        {
-            b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("INTEGER");
-            b.Property<bool>("IsActive").HasColumnType("INTEGER").HasDefaultValue(true);
-            b.Property<decimal>("Price").HasColumnType("TEXT");
-            b.Property<int>("SortOrder").HasColumnType("INTEGER").HasDefaultValue(0);
-            b.Property<int>("TestDefinitionId").HasColumnType("INTEGER");
-            b.Property<string>("TierName").IsRequired().HasColumnType("TEXT");
-            b.HasKey("Id");
-            b.HasIndex("TestDefinitionId", "TierName").IsUnique();
-            b.ToTable("TestPrices");
-        });
-
         modelBuilder.Entity("UrbanDiagnosticCentre.Models.TestDefinition", b =>
         {
             b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("INTEGER");
@@ -147,6 +136,19 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
             b.Property<string>("Unit").IsRequired().HasColumnType("TEXT");
             b.HasKey("Id");
             b.ToTable("TestDefinitions");
+        });
+
+        modelBuilder.Entity("UrbanDiagnosticCentre.Models.TestPrice", b =>
+        {
+            b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("INTEGER");
+            b.Property<bool>("IsActive").HasColumnType("INTEGER").HasDefaultValue(true);
+            b.Property<decimal>("Price").HasColumnType("TEXT");
+            b.Property<int>("SortOrder").HasColumnType("INTEGER").HasDefaultValue(0);
+            b.Property<int>("TestDefinitionId").HasColumnType("INTEGER");
+            b.Property<string>("TierName").IsRequired().HasColumnType("TEXT");
+            b.HasKey("Id");
+            b.HasIndex("TestDefinitionId", "TierName").IsUnique();
+            b.ToTable("TestPrices");
         });
 
         modelBuilder.Entity("UrbanDiagnosticCentre.Models.User", b =>
