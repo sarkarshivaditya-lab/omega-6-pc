@@ -184,8 +184,10 @@ public class PatientReportViewModel : BaseViewModel
 
     private List<TestDefinition> _allTests = new();
     private readonly string _reportCode;
-    private readonly DateTime _testDate  = DateTime.Now;
-    private readonly DateTime _reportDate = DateTime.Now;
+    private DateTime _testDate  = DateTime.Now;
+    private DateTime _reportDate = DateTime.Now;
+
+    private readonly int? _editReportId;   // null = new report; non-null = editing existing draft
 
     // ── Patient fields ────────────────────────────────────────────────────────
     private string _formName = string.Empty;
@@ -244,6 +246,8 @@ public class PatientReportViewModel : BaseViewModel
     public string ReportCodeDisplay  => _reportCode;
     public string TestDateDisplay    => _testDate.ToString("dd MMM yyyy, hh:mm tt");
     public string ReportDateDisplay  => _reportDate.ToString("dd MMM yyyy, hh:mm tt");
+    public bool   IsEditMode         => _editReportId.HasValue;
+    public string PageTitle          => IsEditMode ? "Edit Draft" : "New Report";
 
     // ── Test selection ────────────────────────────────────────────────────────
     public ObservableCollection<string>           Categories        { get; } = new();
@@ -332,7 +336,8 @@ public class PatientReportViewModel : BaseViewModel
         IReportCodeService codeService,
         IAuthService authService,
         INavigationService navigationService,
-        SettingsService settingsService)
+        SettingsService settingsService,
+        int? editReportId = null)
     {
         _testService       = testService;
         _reportService     = reportService;
@@ -340,8 +345,20 @@ public class PatientReportViewModel : BaseViewModel
         _authService       = authService;
         _navigationService = navigationService;
         _settingsService   = settingsService;
+        _editReportId      = editReportId;
 
-        _reportCode = _codeService.Generate();
+        if (editReportId.HasValue)
+        {
+            var existing = _reportService.GetById(editReportId.Value)
+                ?? throw new InvalidOperationException($"Draft report {editReportId} not found.");
+            _reportCode  = existing.ReportCode;
+            _testDate    = existing.TestDate;
+            _reportDate  = existing.ReportDate;
+        }
+        else
+        {
+            _reportCode = _codeService.Generate();
+        }
 
         AddTestCommand             = new RelayCommand(ExecuteAddTest,                                        _ => !IsSaving);
         RemoveTestCommand          = new RelayCommand(ExecuteRemoveTest,                                      _ => !IsSaving);
@@ -354,6 +371,9 @@ public class PatientReportViewModel : BaseViewModel
 
         LoadTests();
         LoadTiers();
+
+        if (editReportId.HasValue)
+            LoadExistingReport(editReportId.Value);
     }
 
     private void OnEntriesChanged(object? sender, NotifyCollectionChangedEventArgs e)
@@ -428,6 +448,59 @@ public class PatientReportViewModel : BaseViewModel
 
         if (Categories.Count > 0)
             SelectedCategory = Categories[0];
+    }
+
+    private void LoadExistingReport(int reportId)
+    {
+        var report = _reportService.GetById(reportId);
+        if (report is null) return;
+
+        // Patient fields
+        _formName            = report.Patient.FullName;
+        _formAge             = report.Patient.Age.ToString();
+        _formPhone           = report.Patient.PhoneNumber;
+        _formReferringDoctor = report.Patient.ReferringDoctor ?? string.Empty;
+        _formAddress         = report.Patient.Address ?? string.Empty;
+        _gender              = report.Patient.Gender;
+
+        OnPropertyChanged(nameof(FormName));
+        OnPropertyChanged(nameof(FormAge));
+        OnPropertyChanged(nameof(FormPhone));
+        OnPropertyChanged(nameof(FormReferringDoctor));
+        OnPropertyChanged(nameof(FormAddress));
+        OnPropertyChanged(nameof(GenderIsMale));
+        OnPropertyChanged(nameof(GenderIsFemale));
+
+        // Override tier from stored report
+        if (!string.IsNullOrEmpty(report.PriceTierName))
+        {
+            _selectedTier = AvailableTiers.FirstOrDefault(t => t == report.PriceTierName) ?? _selectedTier;
+            OnPropertyChanged(nameof(SelectedTier));
+        }
+
+        // Populate selected entries from stored results
+        SelectedEntries.Clear();
+        foreach (var entry in report.Entries)
+        {
+            var td = _allTests.FirstOrDefault(t => t.Id == entry.TestDefinitionId);
+            if (td is null) continue;
+
+            var (min, max) = GetRange(td);
+            var row = new ReportEntryRow(td, min, max);
+
+            // Set result first (this recalculates the flag)
+            row.ResultText = entry.ResultValue ?? string.Empty;
+
+            // Set stored price as an override so it is preserved when tier changes
+            if (entry.ChargedPrice.HasValue)
+                row.PriceEditText = entry.ChargedPrice.Value.ToString("F2", CultureInfo.InvariantCulture);
+
+            SelectedEntries.Add(row);
+        }
+
+        RefreshAvailableTests();
+        OnPropertyChanged(nameof(TotalCharge));
+        OnPropertyChanged(nameof(TotalChargeDisplay));
     }
 
     private void RefreshAvailableTests()
@@ -540,13 +613,14 @@ public class PatientReportViewModel : BaseViewModel
 
         var report = new Report
         {
-            ReportCode      = _reportCode,
-            TestDate        = _testDate,
-            ReportDate      = _reportDate,
-            Status          = status,
-            CreatedAt       = DateTime.Now,
-            CreatedByUserId = _authService.CurrentUser?.Id,
-            PriceTierName   = string.IsNullOrEmpty(_selectedTier) ? null : _selectedTier
+            ReportCode       = _reportCode,
+            TestDate         = _testDate,
+            ReportDate       = _reportDate,
+            Status           = status,
+            CreatedAt        = DateTime.Now,
+            CreatedByUserId  = _authService.CurrentUser?.Id,
+            ModifiedByUserId = _editReportId.HasValue ? _authService.CurrentUser?.Id : null,
+            PriceTierName    = string.IsNullOrEmpty(_selectedTier) ? null : _selectedTier
         };
 
         var entries = SelectedEntries.Select(row => new ReportEntry
@@ -562,7 +636,14 @@ public class PatientReportViewModel : BaseViewModel
         IsSaving = true;
         try
         {
-            if (status == ReportStatus.Completed)
+            if (_editReportId.HasValue)
+            {
+                if (status == ReportStatus.Completed)
+                    await _reportService.FinalizeDraftReportAsync(_editReportId.Value, patient, report, entries);
+                else
+                    _reportService.UpdateDraft(_editReportId.Value, patient, report, entries);
+            }
+            else if (status == ReportStatus.Completed)
             {
                 report.Status = ReportStatus.Draft;  // FinalizeReportAsync owns the transition
                 await _reportService.FinalizeReportAsync(patient, report, entries);

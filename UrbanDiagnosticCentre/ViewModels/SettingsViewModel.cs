@@ -98,6 +98,35 @@ public class SettingsViewModel : BaseViewModel
         set => SetProperty(ref _watermarkText, value);
     }
 
+    // ── Report signatories ────────────────────────────────────────────────────
+    private string _labInchargeName = string.Empty;
+    public string LabInchargeName
+    {
+        get => _labInchargeName;
+        set => SetProperty(ref _labInchargeName, value);
+    }
+
+    private string _labInchargeSignaturePath = string.Empty;
+    public string LabInchargeSignaturePath
+    {
+        get => _labInchargeSignaturePath;
+        set => SetProperty(ref _labInchargeSignaturePath, value);
+    }
+
+    private string _consultantPathologistName = string.Empty;
+    public string ConsultantPathologistName
+    {
+        get => _consultantPathologistName;
+        set => SetProperty(ref _consultantPathologistName, value);
+    }
+
+    private string _consultantPathologistSignaturePath = string.Empty;
+    public string ConsultantPathologistSignaturePath
+    {
+        get => _consultantPathologistSignaturePath;
+        set => SetProperty(ref _consultantPathologistSignaturePath, value);
+    }
+
     // ── Metadata ──────────────────────────────────────────────────────────────
     public string LastSavedDisplay => _loaded.UpdatedAt.HasValue
         ? $"Last saved {_loaded.UpdatedAt.Value:dd MMM yyyy, hh:mm tt}"
@@ -186,9 +215,11 @@ public class SettingsViewModel : BaseViewModel
     // Browse commands are handled in codebehind; these are no-ops exposed so
     // XAML buttons can bind Click handlers without needing code-behind commands.
     // Actual dialogs are opened via Click events in SettingsView.xaml.cs.
-    public RelayCommand BrowseLogoCommand          { get; }
-    public RelayCommand BrowseReportsFolderCommand { get; }
-    public RelayCommand BrowseBackupsFolderCommand { get; }
+    public RelayCommand BrowseLogoCommand                { get; }
+    public RelayCommand BrowseReportsFolderCommand       { get; }
+    public RelayCommand BrowseBackupsFolderCommand       { get; }
+    public RelayCommand BrowseLabSignatureCommand        { get; }
+    public RelayCommand BrowseConsultantSignatureCommand { get; }
 
     public SettingsViewModel(
         SettingsService    settingsService,
@@ -201,9 +232,11 @@ public class SettingsViewModel : BaseViewModel
 
         SaveCommand              = new RelayCommand(ExecuteSave, _ => IsAdmin);
         BackCommand              = new RelayCommand(_ => _navigationService.NavigateTo<DashboardViewModel>(), _ => !_authService.IsUsingDefaultPassword);
-        BrowseLogoCommand          = new RelayCommand(_ => { });
-        BrowseReportsFolderCommand = new RelayCommand(_ => { });
-        BrowseBackupsFolderCommand = new RelayCommand(_ => { });
+        BrowseLogoCommand                = new RelayCommand(_ => { });
+        BrowseReportsFolderCommand       = new RelayCommand(_ => { });
+        BrowseBackupsFolderCommand       = new RelayCommand(_ => { });
+        BrowseLabSignatureCommand        = new RelayCommand(_ => { });
+        BrowseConsultantSignatureCommand = new RelayCommand(_ => { });
 
         LoadSettings();
         BackupReminderMessage = _settingsService.GetBackupReminder();
@@ -223,9 +256,13 @@ public class SettingsViewModel : BaseViewModel
         _reportsRootPath     = _loaded.ReportsRootPath   ?? string.Empty;
         _backupsRootPath     = _loaded.BackupsRootPath   ?? string.Empty;
         _defaultPriceTier    = _loaded.DefaultPriceTier;
-        _gstTaxId            = _loaded.GstTaxId;
-        _signatureFooterText = _loaded.SignatureFooterText;
-        _watermarkText       = _loaded.WatermarkText;
+        _gstTaxId                           = _loaded.GstTaxId;
+        _signatureFooterText                = _loaded.SignatureFooterText;
+        _watermarkText                      = _loaded.WatermarkText;
+        _labInchargeName                    = _loaded.LabInchargeName;
+        _labInchargeSignaturePath           = _loaded.LabInchargeSignaturePath           ?? string.Empty;
+        _consultantPathologistName          = _loaded.ConsultantPathologistName;
+        _consultantPathologistSignaturePath = _loaded.ConsultantPathologistSignaturePath ?? string.Empty;
 
         OnPropertyChanged(nameof(CentreName));
         OnPropertyChanged(nameof(CentreAddress));
@@ -238,6 +275,10 @@ public class SettingsViewModel : BaseViewModel
         OnPropertyChanged(nameof(GstTaxId));
         OnPropertyChanged(nameof(SignatureFooterText));
         OnPropertyChanged(nameof(WatermarkText));
+        OnPropertyChanged(nameof(LabInchargeName));
+        OnPropertyChanged(nameof(LabInchargeSignaturePath));
+        OnPropertyChanged(nameof(ConsultantPathologistName));
+        OnPropertyChanged(nameof(ConsultantPathologistSignaturePath));
         OnPropertyChanged(nameof(LastSavedDisplay));
     }
 
@@ -256,9 +297,13 @@ public class SettingsViewModel : BaseViewModel
                 ReportsRootPath     = string.IsNullOrWhiteSpace(_reportsRootPath)   ? null : _reportsRootPath.Trim(),
                 BackupsRootPath     = string.IsNullOrWhiteSpace(_backupsRootPath)   ? null : _backupsRootPath.Trim(),
                 DefaultPriceTier    = _defaultPriceTier.Trim(),
-                GstTaxId            = _gstTaxId.Trim(),
-                SignatureFooterText = _signatureFooterText.Trim(),
-                WatermarkText       = _watermarkText.Trim()
+                GstTaxId                           = _gstTaxId.Trim(),
+                SignatureFooterText                = _signatureFooterText.Trim(),
+                WatermarkText                      = _watermarkText.Trim(),
+                LabInchargeName                    = _labInchargeName.Trim(),
+                LabInchargeSignaturePath           = string.IsNullOrWhiteSpace(_labInchargeSignaturePath)           ? null : _labInchargeSignaturePath.Trim(),
+                ConsultantPathologistName          = _consultantPathologistName.Trim(),
+                ConsultantPathologistSignaturePath = string.IsNullOrWhiteSpace(_consultantPathologistSignaturePath) ? null : _consultantPathologistSignaturePath.Trim()
             };
 
             _settingsService.Save(s);

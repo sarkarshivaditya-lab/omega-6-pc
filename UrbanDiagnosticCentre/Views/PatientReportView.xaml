@@ -166,7 +166,7 @@
                 </Button>
 
                 <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="20,0,0,0">
-                    <TextBlock Text="New Report"
+                    <TextBlock Text="{Binding PageTitle}"
                                FontSize="17" FontWeight="Bold" FontFamily="Segoe UI"
                                Foreground="White"/>
                     <TextBlock Text="{Binding ReportCodeDisplay}"

@@ -7,6 +7,9 @@ public class NavigationService : INavigationService
     private readonly Func<Type, BaseViewModel> _viewModelFactory;
     private BaseViewModel _currentViewModel = null!;
 
+    // Set before factory invocation so App.xaml.cs can read it during ViewModel construction.
+    internal int? PendingEditId { get; private set; }
+
     public BaseViewModel CurrentViewModel
     {
         get => _currentViewModel;
@@ -26,6 +29,14 @@ public class NavigationService : INavigationService
 
     public void NavigateTo<TViewModel>() where TViewModel : BaseViewModel
     {
+        PendingEditId = null;
         CurrentViewModel = _viewModelFactory(typeof(TViewModel));
+    }
+
+    public void NavigateTo<TViewModel>(int editId) where TViewModel : BaseViewModel
+    {
+        PendingEditId = editId;
+        CurrentViewModel = _viewModelFactory(typeof(TViewModel));
+        PendingEditId = null;
     }
 }

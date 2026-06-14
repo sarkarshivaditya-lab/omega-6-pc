@@ -632,7 +632,7 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="130"/>
                                 <ColumnDefinition Width="110"/>
-                                <ColumnDefinition Width="48"/>
+                                <ColumnDefinition Width="80"/>
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" Text="Report Code"
                                        FontSize="11" FontWeight="SemiBold" FontFamily="Segoe UI"
@@ -664,7 +664,7 @@
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="130"/>
                                                 <ColumnDefinition Width="110"/>
-                                                <ColumnDefinition Width="48"/>
+                                                <ColumnDefinition Width="80"/>
                                             </Grid.ColumnDefinitions>
 
                                             <TextBlock Grid.Column="0"
@@ -730,32 +730,60 @@
                                                 </TextBlock>
                                             </Border>
 
-                                            <!-- Print button -->
-                                            <Button Grid.Column="4"
-                                                    Command="{Binding DataContext.PrintReportCommand,
-                                                        RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                                    CommandParameter="{Binding}"
-                                                    ToolTip="Print / Export PDF"
-                                                    Width="32" Height="32"
-                                                    Background="Transparent" BorderThickness="0"
-                                                    Cursor="Hand" VerticalAlignment="Center">
-                                                <Button.Style>
-                                                    <Style TargetType="Button">
-                                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding Status}" Value="Completed">
-                                                                <Setter Property="Visibility" Value="Visible"/>
-                                                            </DataTrigger>
-                                                            <DataTrigger Binding="{Binding Status}" Value="Printed">
-                                                                <Setter Property="Visibility" Value="Visible"/>
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </Button.Style>
-                                                <TextBlock Text="&#xE749;" FontSize="15"
-                                                           FontFamily="Segoe MDL2 Assets"
-                                                           Foreground="{StaticResource TextSecondaryBrush}"/>
-                                            </Button>
+                                            <!-- Row actions -->
+                                            <StackPanel Grid.Column="4" Orientation="Horizontal"
+                                                        VerticalAlignment="Center">
+
+                                                <!-- Print button (Completed / Printed only) -->
+                                                <Button Command="{Binding DataContext.PrintReportCommand,
+                                                            RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                        CommandParameter="{Binding}"
+                                                        ToolTip="Print / Export PDF"
+                                                        Width="32" Height="32"
+                                                        Background="Transparent" BorderThickness="0"
+                                                        Cursor="Hand">
+                                                    <Button.Style>
+                                                        <Style TargetType="Button">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Status}" Value="Completed">
+                                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Status}" Value="Printed">
+                                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Button.Style>
+                                                    <TextBlock Text="&#xE749;" FontSize="15"
+                                                               FontFamily="Segoe MDL2 Assets"
+                                                               Foreground="{StaticResource TextSecondaryBrush}"/>
+                                                </Button>
+
+                                                <!-- Edit button (Draft only) -->
+                                                <Button Command="{Binding DataContext.EditDraftCommand,
+                                                            RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                        CommandParameter="{Binding}"
+                                                        ToolTip="Edit Draft"
+                                                        Width="32" Height="32"
+                                                        Background="Transparent" BorderThickness="0"
+                                                        Cursor="Hand">
+                                                    <Button.Style>
+                                                        <Style TargetType="Button">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Status}" Value="Draft">
+                                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Button.Style>
+                                                    <TextBlock Text="&#xE70F;" FontSize="15"
+                                                               FontFamily="Segoe MDL2 Assets"
+                                                               Foreground="{StaticResource WarningBrush}"/>
+                                                </Button>
+
+                                            </StackPanel>
 
                                         </Grid>
                                     </Border>

@@ -119,7 +119,8 @@ public partial class App : Application
         if (type == typeof(PatientReportViewModel))
             return new PatientReportViewModel(
                 _testDefinitionService, _reportService,
-                _reportCodeService, _authService, _navigationService, _settingsService);
+                _reportCodeService, _authService, _navigationService, _settingsService,
+                _navigationService.PendingEditId);
 
         if (type == typeof(ReportHistoryViewModel))
             return new ReportHistoryViewModel(_reportService, _printService, _navigationService);

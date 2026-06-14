@@ -161,6 +161,106 @@ public class ReportService
         }
     }
 
+    // ── Edit existing draft ───────────────────────────────────────────────────
+
+    // Updates patient info, report metadata, and entries for an existing Draft in place.
+    public void UpdateDraft(int reportId, Patient updatedPatient, Report updatedReportData, List<ReportEntry> updatedEntries)
+    {
+        var report = _db.Reports
+            .Include(r => r.Patient)
+            .Include(r => r.Entries)
+            .FirstOrDefault(r => r.Id == reportId);
+        if (report is null)
+            throw new InvalidOperationException($"Report {reportId} not found.");
+        ThrowIfLocked(report);
+
+        report.Patient.FullName        = updatedPatient.FullName;
+        report.Patient.Age             = updatedPatient.Age;
+        report.Patient.Gender          = updatedPatient.Gender;
+        report.Patient.PhoneNumber     = updatedPatient.PhoneNumber;
+        report.Patient.ReferringDoctor = updatedPatient.ReferringDoctor;
+        report.Patient.Address         = updatedPatient.Address;
+
+        report.TestDate         = updatedReportData.TestDate;
+        report.ReportDate       = updatedReportData.ReportDate;
+        report.PriceTierName    = updatedReportData.PriceTierName;
+        report.ModifiedAt       = DateTime.Now;
+        report.ModifiedByUserId = updatedReportData.ModifiedByUserId;
+
+        var oldEntries = report.Entries.ToList();
+        _db.ReportEntries.RemoveRange(oldEntries);
+        report.Entries.Clear();
+        foreach (var entry in updatedEntries)
+            report.Entries.Add(entry);
+
+        _db.SaveChanges();
+    }
+
+    // Updates a Draft, generates its PDF, and transitions it to Completed — atomically.
+    public async Task<string> FinalizeDraftReportAsync(int reportId, Patient updatedPatient, Report updatedReportData, List<ReportEntry> updatedEntries)
+    {
+        var report = _db.Reports
+            .Include(r => r.Patient)
+            .Include(r => r.Entries)
+            .Include(r => r.CreatedByUser)
+            .FirstOrDefault(r => r.Id == reportId);
+        if (report is null)
+            throw new InvalidOperationException($"Report {reportId} not found.");
+        ThrowIfLocked(report);
+
+        var settings = _settingsService.Load();
+        if (string.IsNullOrWhiteSpace(settings.CentreName))
+            throw new InvalidOperationException(
+                "Centre name is not configured. " +
+                "Please go to Settings → Centre Details and enter your centre name before generating reports.");
+
+        string? generatedPath = null;
+        var root = !string.IsNullOrEmpty(settings.ReportsRootPath) ? settings.ReportsRootPath : _defaultReportsRoot;
+
+        using var tx = _db.Database.BeginTransaction();
+        try
+        {
+            report.Patient.FullName        = updatedPatient.FullName;
+            report.Patient.Age             = updatedPatient.Age;
+            report.Patient.Gender          = updatedPatient.Gender;
+            report.Patient.PhoneNumber     = updatedPatient.PhoneNumber;
+            report.Patient.ReferringDoctor = updatedPatient.ReferringDoctor;
+            report.Patient.Address         = updatedPatient.Address;
+
+            report.TestDate         = updatedReportData.TestDate;
+            report.ReportDate       = updatedReportData.ReportDate;
+            report.PriceTierName    = updatedReportData.PriceTierName;
+            report.ModifiedAt       = DateTime.Now;
+            report.ModifiedByUserId = updatedReportData.ModifiedByUserId;
+
+            var oldEntries = report.Entries.ToList();
+            _db.ReportEntries.RemoveRange(oldEntries);
+            report.Entries.Clear();
+            foreach (var entry in updatedEntries)
+                report.Entries.Add(entry);
+
+            _db.SaveChanges();
+
+            Directory.CreateDirectory(root);
+            generatedPath = await Task.Run(() => PdfReportService.Generate(report, settings));
+
+            report.PdfPath           = Path.GetRelativePath(root, generatedPath).Replace('\\', '/');
+            report.ReportGeneratedAt = DateTime.Now;
+            report.PdfVersion        = report.PdfVersion + 1;
+            report.Status            = ReportStatus.Completed;
+            _db.SaveChanges();
+
+            tx.Commit();
+            return generatedPath;
+        }
+        catch
+        {
+            if (generatedPath is not null)
+                try { File.Delete(generatedPath); } catch { }
+            throw;
+        }
+    }
+
     // ── Mutation guards ───────────────────────────────────────────────────────
 
     // Archives a report (hides from active views). Non-destructive and always allowed.

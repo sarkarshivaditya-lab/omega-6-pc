@@ -65,6 +65,7 @@ public class DashboardViewModel : BaseViewModel
     public RelayCommand NavigateToMaintenanceCommand  { get; }
     public RelayCommand NavigateToAccountsCommand     { get; }
     public RelayCommand PrintReportCommand            { get; }
+    public RelayCommand EditDraftCommand              { get; }
 
     public DashboardViewModel(IAuthService authService, INavigationService navigationService, ReportService reportService, PrintService printService, SettingsService settingsService)
     {
@@ -84,6 +85,7 @@ public class DashboardViewModel : BaseViewModel
         NavigateToMaintenanceCommand = new RelayCommand(_ => _navigationService.NavigateTo<MaintenanceViewModel>());
         NavigateToAccountsCommand    = new RelayCommand(_ => _navigationService.NavigateTo<AccountsViewModel>());
         PrintReportCommand           = new RelayCommand(ExecutePrintReport);
+        EditDraftCommand             = new RelayCommand(ExecuteEditDraft);
 
         Refresh();
     }
@@ -118,6 +120,12 @@ public class DashboardViewModel : BaseViewModel
     {
         if (parameter is not ReportSummary summary) return;
         _printService.OpenPdf(summary.Id, summary.ReportCode);
+    }
+
+    private void ExecuteEditDraft(object? parameter)
+    {
+        if (parameter is not ReportSummary summary) return;
+        _navigationService.NavigateTo<PatientReportViewModel>(summary.Id);
     }
 
     private static string GetInitials(string? fullName)

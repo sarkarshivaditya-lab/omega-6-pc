@@ -137,6 +137,7 @@ public class ReportHistoryViewModel : BaseViewModel
     public RelayCommand CloseDetailCommand    { get; }
     public RelayCommand BackCommand           { get; }
     public RelayCommand NavigateToNewReportCommand { get; }
+    public RelayCommand EditDraftCommand      { get; }
 
     public ReportHistoryViewModel(ReportService reportService, PrintService printService, INavigationService navigationService)
     {
@@ -152,6 +153,7 @@ public class ReportHistoryViewModel : BaseViewModel
         CloseDetailCommand         = new RelayCommand(_ => { Detail = null; SelectedRow = null; });
         BackCommand                = new RelayCommand(_ => _navigationService.NavigateTo<DashboardViewModel>());
         NavigateToNewReportCommand = new RelayCommand(_ => _navigationService.NavigateTo<PatientReportViewModel>());
+        EditDraftCommand           = new RelayCommand(ExecuteEditDraft);
 
         RunSearch(); // load all results on open
     }
@@ -233,6 +235,13 @@ public class ReportHistoryViewModel : BaseViewModel
         var row = parameter as ReportHistoryRow ?? _selectedRow;
         if (row is null) return;
         LoadDetail(row);
+    }
+
+    private void ExecuteEditDraft(object? parameter)
+    {
+        var row = parameter as ReportHistoryRow ?? _selectedRow;
+        if (row is null || row.Status != ReportStatus.Draft) return;
+        _navigationService.NavigateTo<PatientReportViewModel>(row.ReportId);
     }
 
     // ── Detail loading ────────────────────────────────────────────────────────

@@ -510,7 +510,7 @@
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
 
-                            <DataGridTemplateColumn Header="Actions" Width="210" CanUserSort="False">
+                            <DataGridTemplateColumn Header="Actions" Width="255" CanUserSort="False">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal"
@@ -564,7 +564,27 @@
                                                     Foreground="{StaticResource TextPrimaryBrush}"
                                                     Command="{Binding DataContext.ViewDetailsCommand,
                                                         RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                                    CommandParameter="{Binding}"/>
+                                                    CommandParameter="{Binding}"
+                                                    Margin="0,0,5,0"/>
+
+                                            <Button Content="Edit"
+                                                    Background="#FFFBEB"
+                                                    BorderBrush="#FDE68A"
+                                                    Foreground="#B45309"
+                                                    Command="{Binding DataContext.EditDraftCommand,
+                                                        RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                    CommandParameter="{Binding}">
+                                                <Button.Style>
+                                                    <Style TargetType="Button" BasedOn="{StaticResource RowActionButton}">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Status}" Value="Draft">
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
                                         </StackPanel>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>

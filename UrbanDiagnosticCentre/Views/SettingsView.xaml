@@ -278,6 +278,95 @@
                         </StackPanel>
                     </Border>
 
+                    <!-- REPORT SIGNATORIES -->
+                    <TextBlock Text="REPORT SIGNATORIES" Style="{StaticResource SectionLabel}"/>
+
+                    <Border Background="{StaticResource CardBrush}" CornerRadius="12" Padding="24"
+                            Margin="0,0,0,20">
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="18" ShadowDepth="2" Color="#000000" Opacity="0.05"/>
+                        </Border.Effect>
+                        <StackPanel>
+
+                            <!-- Lab Incharge -->
+                            <TextBlock Text="Lab Incharge"
+                                       FontSize="13" FontWeight="SemiBold" FontFamily="Segoe UI"
+                                       Foreground="{StaticResource TextPrimaryBrush}"
+                                       Margin="0,0,0,12"/>
+
+                            <Grid Margin="0,0,0,14">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="160"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="Name" Style="{StaticResource FieldLabel}"/>
+                                <TextBox   Grid.Column="1"
+                                           Text="{Binding LabInchargeName, UpdateSourceTrigger=PropertyChanged}"
+                                           Style="{StaticResource InputField}"/>
+                            </Grid>
+
+                            <Grid Margin="0,0,0,24">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="160"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="Signature Image" Style="{StaticResource FieldLabel}"/>
+                                <TextBox   Grid.Column="1"
+                                           Text="{Binding LabInchargeSignaturePath, UpdateSourceTrigger=PropertyChanged}"
+                                           Style="{StaticResource InputField}"
+                                           Margin="0,0,8,0"/>
+                                <Button    Grid.Column="2"
+                                           Click="BrowseLabSignature_Click"
+                                           Content="Browse…"
+                                           Style="{StaticResource BrowseButton}"
+                                           Width="90"/>
+                            </Grid>
+
+                            <Border Height="1" Background="{StaticResource DividerBrush}" Margin="0,0,0,20"/>
+
+                            <!-- Consultant Pathologist -->
+                            <TextBlock Text="Consultant Pathologist"
+                                       FontSize="13" FontWeight="SemiBold" FontFamily="Segoe UI"
+                                       Foreground="{StaticResource TextPrimaryBrush}"
+                                       Margin="0,0,0,12"/>
+
+                            <Grid Margin="0,0,0,14">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="160"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="Name" Style="{StaticResource FieldLabel}"/>
+                                <TextBox   Grid.Column="1"
+                                           Text="{Binding ConsultantPathologistName, UpdateSourceTrigger=PropertyChanged}"
+                                           Style="{StaticResource InputField}"/>
+                            </Grid>
+
+                            <Grid Margin="0,0,0,4">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="160"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="Signature Image" Style="{StaticResource FieldLabel}"/>
+                                <TextBox   Grid.Column="1"
+                                           Text="{Binding ConsultantPathologistSignaturePath, UpdateSourceTrigger=PropertyChanged}"
+                                           Style="{StaticResource InputField}"
+                                           Margin="0,0,8,0"/>
+                                <Button    Grid.Column="2"
+                                           Click="BrowseConsultantSignature_Click"
+                                           Content="Browse…"
+                                           Style="{StaticResource BrowseButton}"
+                                           Width="90"/>
+                            </Grid>
+                            <TextBlock Text="PNG or JPG recommended. Appears above the signatory name in PDF reports."
+                                       FontSize="11" FontFamily="Segoe UI"
+                                       Foreground="{StaticResource TextSecondaryBrush}"
+                                       Margin="160,4,0,0"/>
+
+                        </StackPanel>
+                    </Border>
+
                     <!-- PRICING -->
                     <TextBlock Text="PRICING" Style="{StaticResource SectionLabel}"/>
 

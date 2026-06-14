@@ -55,6 +55,36 @@ public partial class SettingsView : UserControl
             vm.BackupsRootPath = dialog.FolderName;
     }
 
+    private void BrowseLabSignature_Click(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is not SettingsViewModel vm) return;
+
+        var dialog = new OpenFileDialog
+        {
+            Title           = "Select Lab Incharge Signature Image",
+            Filter          = "Image Files (*.png;*.jpg;*.jpeg;*.bmp)|*.png;*.jpg;*.jpeg;*.bmp|All Files (*.*)|*.*",
+            CheckFileExists = true
+        };
+
+        if (dialog.ShowDialog() == true)
+            vm.LabInchargeSignaturePath = dialog.FileName;
+    }
+
+    private void BrowseConsultantSignature_Click(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is not SettingsViewModel vm) return;
+
+        var dialog = new OpenFileDialog
+        {
+            Title           = "Select Consultant Pathologist Signature Image",
+            Filter          = "Image Files (*.png;*.jpg;*.jpeg;*.bmp)|*.png;*.jpg;*.jpeg;*.bmp|All Files (*.*)|*.*",
+            CheckFileExists = true
+        };
+
+        if (dialog.ShowDialog() == true)
+            vm.ConsultantPathologistSignaturePath = dialog.FileName;
+    }
+
     private async void ChangePassword_Click(object sender, RoutedEventArgs e)
     {
         if (DataContext is not SettingsViewModel vm) return;

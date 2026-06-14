@@ -70,9 +70,13 @@ public class SettingsService
             existing.BackupsRootPath     = incoming.BackupsRootPath;
             existing.DefaultPriceTier    = incoming.DefaultPriceTier;
             existing.GstTaxId            = incoming.GstTaxId;
-            existing.SignatureFooterText = incoming.SignatureFooterText;
-            existing.WatermarkText       = incoming.WatermarkText;
-            existing.UpdatedAt           = incoming.UpdatedAt;
+            existing.SignatureFooterText                = incoming.SignatureFooterText;
+            existing.WatermarkText                      = incoming.WatermarkText;
+            existing.LabInchargeName                    = incoming.LabInchargeName;
+            existing.LabInchargeSignaturePath           = incoming.LabInchargeSignaturePath;
+            existing.ConsultantPathologistName          = incoming.ConsultantPathologistName;
+            existing.ConsultantPathologistSignaturePath = incoming.ConsultantPathologistSignaturePath;
+            existing.UpdatedAt                          = incoming.UpdatedAt;
         }
 
         _db.SaveChanges();
