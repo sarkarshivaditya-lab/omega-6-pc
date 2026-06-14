@@ -29,7 +29,7 @@
 
     <Window.Resources>
 
-        <!-- Base style shared by Minimize and Maximize/Restore buttons. -->
+        <!-- Minimize / Maximize chrome button base style -->
         <Style x:Key="ChromeButton" TargetType="Button">
             <Setter Property="Width"          Value="46"/>
             <Setter Property="Height"         Value="32"/>
@@ -56,7 +56,7 @@
                                 <Setter TargetName="Bd" Property="Background" Value="#1AFFFFFF"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="#33FFFFFF"/>
+                                <Setter TargetName="Bd" Property="Background" Value="#2EFFFFFF"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -64,7 +64,7 @@
             </Setter>
         </Style>
 
-        <!-- Close button uses the same dimensions but Windows-red hover state. -->
+        <!-- Close button — Windows-red hover state -->
         <Style x:Key="ChromeCloseButton" TargetType="Button">
             <Setter Property="Width"          Value="46"/>
             <Setter Property="Height"         Value="32"/>
@@ -85,7 +85,7 @@
                                 <Setter TargetName="Bd" Property="Background" Value="#C42B1C"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="#B01F10"/>
+                                <Setter TargetName="Bd" Property="Background" Value="#9B2218"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -97,8 +97,6 @@
 
     <!--
         DockPanel root: title bar docked to top, ContentControl fills the rest.
-        This is the only structural change to what was previously a bare
-        <ContentControl/> as the sole child of the Window.
     -->
     <DockPanel>
 
@@ -107,50 +105,47 @@
               Height="32"
               Background="{StaticResource PrimaryDarkBrush}">
 
-            <!-- App name — sits in the CaptionHeight region, acts as drag handle. -->
-            <TextBlock Text="Urban Diagnostic Centre"
-                       Foreground="White"
-                       FontSize="12"
-                       FontWeight="SemiBold"
-                       VerticalAlignment="Center"
-                       Margin="12,0,0,0"/>
+            <!-- App name — acts as drag handle -->
+            <StackPanel Orientation="Horizontal"
+                        VerticalAlignment="Center"
+                        Margin="14,0,0,0">
+                <TextBlock Text="UDC"
+                           Foreground="{StaticResource AccentBrush}"
+                           FontSize="11"
+                           FontWeight="Bold"
+                           FontFamily="Segoe UI"
+                           VerticalAlignment="Center"
+                           Margin="0,0,6,0"/>
+                <TextBlock Text="Urban Diagnostic Centre"
+                           Foreground="#B0C8E8"
+                           FontSize="11"
+                           FontFamily="Segoe UI"
+                           VerticalAlignment="Center"/>
+            </StackPanel>
 
-            <!-- Control buttons — right-aligned, 46×32 each. -->
+            <!-- Control buttons — right-aligned -->
             <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Right">
 
                 <!-- Minimize -->
                 <Button Style="{StaticResource ChromeButton}"
                         Click="MinimizeButton_Click">
-                    <!--
-                        Marlett is a Windows system font (present since Windows 95)
-                        whose glyphs map directly to the caption-button symbols:
-                        '0' = minimize line, '1' = maximize square,
-                        '2' = restore (overlapping squares), 'r' = close ×.
-                    -->
                     <TextBlock Text="0"
                                FontFamily="Marlett"
                                FontSize="10"
-                               Foreground="White"/>
+                               Foreground="#B0C8E8"/>
                 </Button>
 
-                <!-- Maximize / Restore — glyph switches automatically on WindowState. -->
+                <!-- Maximize / Restore — glyph switches on WindowState -->
                 <Button Style="{StaticResource ChromeButton}"
                         Click="MaximizeRestoreButton_Click">
                     <TextBlock FontFamily="Marlett"
                                FontSize="10"
-                               Foreground="White">
+                               Foreground="#B0C8E8">
                         <TextBlock.Style>
                             <Style TargetType="TextBlock">
-                                <!-- Default: show maximize glyph -->
                                 <Setter Property="Text" Value="1"/>
                                 <Style.Triggers>
-                                    <!--
-                                        When the window is maximized, switch to the
-                                        restore-down glyph automatically. No code-behind
-                                        needed; the DataTrigger reads the Window's own
-                                        WindowState via RelativeSource.
-                                    -->
                                     <DataTrigger Binding="{Binding WindowState,
                                                      RelativeSource={RelativeSource AncestorType=Window}}"
                                                  Value="Maximized">
@@ -168,13 +163,13 @@
                     <TextBlock Text="r"
                                FontFamily="Marlett"
                                FontSize="10"
-                               Foreground="White"/>
+                               Foreground="#B0C8E8"/>
                 </Button>
 
             </StackPanel>
         </Grid>
 
-        <!-- ===== Main content (unchanged binding) ===== -->
+        <!-- ===== Main content ===== -->
         <ContentControl Content="{Binding CurrentViewModel}"
                         Focusable="False"/>
 

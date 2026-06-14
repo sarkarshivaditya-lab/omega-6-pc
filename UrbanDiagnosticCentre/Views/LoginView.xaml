@@ -10,103 +10,171 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="420"/>
+            <ColumnDefinition Width="400"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
         <!-- ===== Left branding panel ===== -->
-        <Border Grid.Column="0" Background="{StaticResource PrimaryBrush}">
-            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center"
-                        Margin="40">
+        <Border Grid.Column="0" Background="{StaticResource SidebarBrush}">
+            <Grid>
+                <!-- Subtle accent overlay -->
+                <Border Background="{StaticResource PrimaryBrush}" Opacity="0.18"
+                        HorizontalAlignment="Right" Width="3"/>
 
-                <Border Width="90" Height="90" CornerRadius="45"
-                        Background="White" Margin="0,0,0,28"
-                        HorizontalAlignment="Center">
-                    <TextBlock Text="UDC" FontSize="26" FontWeight="Bold"
-                               Foreground="{StaticResource PrimaryBrush}"
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center"
+                            Margin="44,0">
+
+                    <!-- Logo badge -->
+                    <Border Width="72" Height="72" CornerRadius="18"
+                            Background="{StaticResource PrimaryBrush}"
+                            HorizontalAlignment="Center" Margin="0,0,0,24">
+                        <TextBlock Text="UDC" FontSize="22" FontWeight="Bold"
+                                   FontFamily="Segoe UI"
+                                   Foreground="White"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
+                    </Border>
+
+                    <TextBlock Text="Urban Diagnostic"
+                               FontSize="26" FontWeight="Bold"
+                               FontFamily="Segoe UI"
+                               Foreground="White"
+                               TextAlignment="Center"
+                               HorizontalAlignment="Center"/>
+                    <TextBlock Text="Centre"
+                               FontSize="26" FontWeight="Bold"
+                               FontFamily="Segoe UI"
+                               Foreground="White"
+                               TextAlignment="Center"
                                HorizontalAlignment="Center"
-                               VerticalAlignment="Center"/>
-                </Border>
+                               Margin="0,0,0,16"/>
 
-                <TextBlock Text="Urban Diagnostic"
-                           FontSize="28" FontWeight="Bold" Foreground="White"
-                           TextAlignment="Center" HorizontalAlignment="Center"/>
-                <TextBlock Text="Centre"
-                           FontSize="28" FontWeight="Bold" Foreground="White"
-                           TextAlignment="Center" HorizontalAlignment="Center"
-                           Margin="0,0,0,20"/>
+                    <Border Width="48" Height="2"
+                            Background="{StaticResource AccentBrush}"
+                            HorizontalAlignment="Center"
+                            Margin="0,0,0,16" CornerRadius="1"/>
 
-                <Border Width="60" Height="2"
-                        Background="{StaticResource PrimaryLightBrush}"
-                        HorizontalAlignment="Center" Margin="0,0,0,20"/>
+                    <TextBlock Text="Precision Diagnostics · Trusted Results"
+                               FontSize="12" FontFamily="Segoe UI"
+                               Foreground="#7EB3F5"
+                               TextAlignment="Center"
+                               HorizontalAlignment="Center"
+                               TextWrapping="Wrap"/>
 
-                <TextBlock Text="Precision Diagnostics · Trusted Results"
-                           FontSize="13" Foreground="#B3D9F9"
-                           TextAlignment="Center" HorizontalAlignment="Center"
-                           TextWrapping="Wrap"/>
-
-                <StackPanel Margin="0,40,0,0" HorizontalAlignment="Center">
-                    <TextBlock Text="✓  Fully Offline System"
-                               FontSize="13" Foreground="#90CAF9" Margin="0,6"/>
-                    <TextBlock Text="✓  Secure Role-Based Access"
-                               FontSize="13" Foreground="#90CAF9" Margin="0,6"/>
-                    <TextBlock Text="✓  Fast Report Generation"
-                               FontSize="13" Foreground="#90CAF9" Margin="0,6"/>
+                    <!-- Feature list -->
+                    <StackPanel Margin="0,36,0,0">
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                            <Border Width="20" Height="20" CornerRadius="10"
+                                    Background="{StaticResource AccentBrush}"
+                                    Margin="0,0,10,0">
+                                <TextBlock Text="&#xE73E;" FontSize="11" FontWeight="Bold"
+                                           FontFamily="Segoe MDL2 Assets"
+                                           Foreground="White"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
+                            </Border>
+                            <TextBlock Text="Fully Offline System"
+                                       FontSize="13" FontFamily="Segoe UI"
+                                       Foreground="#A8C8F0"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                            <Border Width="20" Height="20" CornerRadius="10"
+                                    Background="{StaticResource AccentBrush}"
+                                    Margin="0,0,10,0">
+                                <TextBlock Text="&#xE73E;" FontSize="11" FontWeight="Bold"
+                                           FontFamily="Segoe MDL2 Assets"
+                                           Foreground="White"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
+                            </Border>
+                            <TextBlock Text="Secure Role-Based Access"
+                                       FontSize="13" FontFamily="Segoe UI"
+                                       Foreground="#A8C8F0"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Border Width="20" Height="20" CornerRadius="10"
+                                    Background="{StaticResource AccentBrush}"
+                                    Margin="0,0,10,0">
+                                <TextBlock Text="&#xE73E;" FontSize="11" FontWeight="Bold"
+                                           FontFamily="Segoe MDL2 Assets"
+                                           Foreground="White"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
+                            </Border>
+                            <TextBlock Text="Fast Report Generation"
+                                       FontSize="13" FontFamily="Segoe UI"
+                                       Foreground="#A8C8F0"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </StackPanel>
                 </StackPanel>
-            </StackPanel>
+            </Grid>
         </Border>
 
         <!-- ===== Right login form ===== -->
         <Grid Grid.Column="1" Background="{StaticResource BackgroundBrush}">
             <Border Background="{StaticResource CardBrush}"
-                    CornerRadius="12" Padding="48,40"
-                    Margin="60" VerticalAlignment="Center">
+                    CornerRadius="16" Padding="48,44"
+                    Margin="56" VerticalAlignment="Center">
                 <Border.Effect>
-                    <DropShadowEffect BlurRadius="20" ShadowDepth="3"
-                                      Color="#000000" Opacity="0.08"/>
+                    <DropShadowEffect BlurRadius="28" ShadowDepth="4"
+                                      Color="#000000" Opacity="0.07"/>
                 </Border.Effect>
 
                 <StackPanel>
-                    <TextBlock Text="Sign In"
+                    <TextBlock Text="Welcome back"
                                Style="{StaticResource HeadingLarge}"
-                               Margin="0,0,0,6"/>
-                    <TextBlock Text="Enter your credentials to access the system"
+                               Margin="0,0,0,4"/>
+                    <TextBlock Text="Sign in to access the system"
                                Style="{StaticResource BodyText}"
-                               Margin="0,0,0,36"/>
+                               Margin="0,0,0,32"/>
 
                     <!-- Username -->
                     <TextBlock Text="USERNAME" Style="{StaticResource LabelText}"/>
                     <TextBox x:Name="UsernameBox"
                              Style="{StaticResource InputField}"
                              Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"
-                             Margin="0,0,0,20"/>
+                             Margin="0,0,0,18"/>
 
                     <!-- Password -->
                     <TextBlock Text="PASSWORD" Style="{StaticResource LabelText}"/>
                     <PasswordBox x:Name="PasswordBox"
                                  Style="{StaticResource PasswordField}"
-                                 Margin="0,0,0,8"
+                                 Margin="0,0,0,10"
                                  KeyDown="PasswordBox_KeyDown"/>
 
                     <!-- Error message -->
-                    <TextBlock Text="{Binding ErrorMessage}"
-                               Foreground="{StaticResource ErrorBrush}"
-                               FontSize="13" Margin="0,0,0,16"
-                               TextWrapping="Wrap"
-                               Visibility="{Binding ErrorMessage,
-                                   Converter={StaticResource StringToVisibility}}"/>
+                    <Border Background="#FEF2F2" CornerRadius="8" Padding="12,10"
+                            Margin="0,0,0,14"
+                            Visibility="{Binding ErrorMessage,
+                                Converter={StaticResource StringToVisibility}}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE7BA;" FontSize="13"
+                                       FontFamily="Segoe MDL2 Assets"
+                                       Foreground="{StaticResource ErrorBrush}"
+                                       Margin="0,0,8,0" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding ErrorMessage}"
+                                       Foreground="{StaticResource ErrorBrush}"
+                                       FontSize="13" FontFamily="Segoe UI"
+                                       TextWrapping="Wrap"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
 
                     <!-- Login button -->
                     <Button x:Name="LoginButton"
-                            Content="SIGN IN"
+                            Content="Sign In"
                             Style="{StaticResource PrimaryButton}"
+                            Height="46"
                             Click="LoginButton_Click"
                             IsEnabled="{Binding IsLoggingIn,
                                 Converter={StaticResource InverseBool}}"
                             Margin="0,4,0,0"/>
 
                     <TextBlock Text="v1.0.0 · Urban Diagnostic Centre"
-                               FontSize="11"
+                               FontSize="11" FontFamily="Segoe UI"
                                Foreground="{StaticResource TextSecondaryBrush}"
                                HorizontalAlignment="Center"
                                Margin="0,28,0,0"/>

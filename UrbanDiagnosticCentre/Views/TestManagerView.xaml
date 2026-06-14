@@ -7,22 +7,22 @@
         <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
         <helpers:StringToVisibilityConverter x:Key="StringToVisibility"/>
 
-        <!-- DataGrid column header style -->
         <Style x:Key="GridHeader" TargetType="DataGridColumnHeader">
-            <Setter Property="Background"     Value="#F0F4F8"/>
-            <Setter Property="Foreground"     Value="{StaticResource TextSecondaryBrush}"/>
-            <Setter Property="FontSize"       Value="12"/>
-            <Setter Property="FontWeight"     Value="SemiBold"/>
-            <Setter Property="Padding"        Value="12,10"/>
-            <Setter Property="BorderBrush"    Value="{StaticResource DividerBrush}"/>
+            <Setter Property="Background"      Value="#F0F4F9"/>
+            <Setter Property="Foreground"      Value="{StaticResource TextSecondaryBrush}"/>
+            <Setter Property="FontSize"        Value="11"/>
+            <Setter Property="FontWeight"      Value="Bold"/>
+            <Setter Property="FontFamily"      Value="Segoe UI"/>
+            <Setter Property="Padding"         Value="14,11"/>
+            <Setter Property="BorderBrush"     Value="{StaticResource DividerBrush}"/>
             <Setter Property="BorderThickness" Value="0,0,0,1"/>
         </Style>
 
-        <!-- DataGrid cell style -->
         <Style x:Key="GridCell" TargetType="DataGridCell">
             <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Padding"         Value="12,10"/>
-            <Setter Property="FontSize"        Value="14"/>
+            <Setter Property="Padding"         Value="14,10"/>
+            <Setter Property="FontSize"        Value="13"/>
+            <Setter Property="FontFamily"      Value="Segoe UI"/>
             <Setter Property="Foreground"      Value="{StaticResource TextPrimaryBrush}"/>
             <Setter Property="Template">
                 <Setter.Value>
@@ -36,17 +36,17 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="Background" Value="#E3F2FD"/>
+                    <Setter Property="Background" Value="#EBF3FF"/>
                     <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
 
-        <!-- Small action button inside DataGrid rows -->
         <Style x:Key="RowActionButton" TargetType="Button">
             <Setter Property="Height"          Value="30"/>
             <Setter Property="FontSize"        Value="12"/>
             <Setter Property="FontWeight"      Value="SemiBold"/>
+            <Setter Property="FontFamily"      Value="Segoe UI"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Cursor"          Value="Hand"/>
             <Setter Property="Padding"         Value="10,0"/>
@@ -57,7 +57,7 @@
                                 Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="4">
+                                CornerRadius="6">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
@@ -73,11 +73,11 @@
             </Setter>
         </Style>
 
-        <!-- Secondary outline button (Cancel) -->
         <Style x:Key="OutlineButton" TargetType="Button">
             <Setter Property="Height"          Value="44"/>
-            <Setter Property="FontSize"        Value="14"/>
+            <Setter Property="FontSize"        Value="13"/>
             <Setter Property="FontWeight"      Value="SemiBold"/>
+            <Setter Property="FontFamily"      Value="Segoe UI"/>
             <Setter Property="Background"      Value="White"/>
             <Setter Property="Foreground"      Value="{StaticResource TextPrimaryBrush}"/>
             <Setter Property="BorderBrush"     Value="{StaticResource DividerBrush}"/>
@@ -90,12 +90,12 @@
                                 Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="6">
+                                CornerRadius="8">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#F5F7FA"/>
+                                <Setter TargetName="border" Property="Background" Value="#F0F4F9"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter TargetName="border" Property="Opacity" Value="0.8"/>
@@ -113,10 +113,8 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- ===== Top bar ===== -->
-        <Border Grid.Row="0" Background="White"
-                BorderBrush="{StaticResource DividerBrush}" BorderThickness="0,0,0,1"
-                Padding="24,14">
+        <!-- ===== Header ===== -->
+        <Border Grid.Row="0" Background="{StaticResource SidebarBrush}" Height="64" Padding="24,0">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -126,36 +124,45 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <!-- Back button -->
                 <Button Grid.Column="0"
                         Command="{Binding NavigateToDashboardCommand}"
-                        Style="{StaticResource OutlineButton}"
-                        Width="130" Content="← Dashboard"/>
+                        Style="{StaticResource GhostButton}"
+                        Height="40" Padding="12,0" Margin="0,0,20,0" VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE830;" FontSize="14" FontFamily="Segoe MDL2 Assets"
+                                   VerticalAlignment="Center" Margin="0,0,6,0"/>
+                        <TextBlock Text="Dashboard" FontSize="13" FontFamily="Segoe UI"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
 
-                <!-- Page title -->
-                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="20,0,0,0">
-                    <TextBlock Text="Test Manager" Style="{StaticResource HeadingLarge}"/>
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <TextBlock Text="Test Manager"
+                               FontSize="17" FontWeight="Bold" FontFamily="Segoe UI"
+                               Foreground="White"/>
                     <TextBlock Text="Manage diagnostic test definitions"
-                               Style="{StaticResource BodyText}" Margin="0,2,0,0"/>
+                               FontSize="11" FontFamily="Segoe UI"
+                               Foreground="#7EB3F5"/>
                 </StackPanel>
 
                 <!-- Search box -->
-                <Border Grid.Column="2" BorderBrush="{StaticResource DividerBrush}"
-                        BorderThickness="1" CornerRadius="6"
-                        Background="White" VerticalAlignment="Center">
+                <Border Grid.Column="2" BorderBrush="#3A5A84" BorderThickness="1"
+                        CornerRadius="8" Background="#18FFFFFF" VerticalAlignment="Center">
                     <Grid Width="240">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="&#x1F50D;" FontSize="14"
+                        <TextBlock Grid.Column="0" Text="&#xE721;" FontSize="13"
+                                   FontFamily="Segoe MDL2 Assets"
                                    Margin="10,0,6,0" VerticalAlignment="Center"
-                                   Foreground="{StaticResource TextSecondaryBrush}"/>
+                                   Foreground="#7EB3F5"/>
                         <TextBox Grid.Column="1"
                                  Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                                 Height="40" FontSize="14" BorderThickness="0"
+                                 Height="38" FontSize="13" FontFamily="Segoe UI"
+                                 BorderThickness="0"
                                  Background="Transparent"
-                                 Foreground="{StaticResource TextPrimaryBrush}"
+                                 Foreground="White"
                                  VerticalContentAlignment="Center"
                                  Padding="0,0,10,0">
                             <TextBox.Style>
@@ -190,11 +197,11 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <!-- ── DataGrid card ── -->
-            <Border Grid.Column="0" Background="White" CornerRadius="10"
+            <!-- DataGrid card -->
+            <Border Grid.Column="0" Background="{StaticResource CardBrush}" CornerRadius="12"
                     BorderBrush="{StaticResource DividerBrush}" BorderThickness="1">
                 <Border.Effect>
-                    <DropShadowEffect BlurRadius="10" ShadowDepth="1" Color="#000000" Opacity="0.05"/>
+                    <DropShadowEffect BlurRadius="18" ShadowDepth="2" Color="#000000" Opacity="0.05"/>
                 </Border.Effect>
 
                 <DataGrid ItemsSource="{Binding Tests}"
@@ -210,10 +217,10 @@
                           HeadersVisibility="Column"
                           SelectionMode="Single"
                           SelectionUnit="FullRow"
-                          RowBackground="White"
-                          AlternatingRowBackground="#FAFBFC"
+                          RowBackground="{StaticResource CardBrush}"
+                          AlternatingRowBackground="{StaticResource SurfaceBrush}"
                           BorderThickness="0"
-                          Background="White"
+                          Background="{StaticResource CardBrush}"
                           ColumnHeaderStyle="{StaticResource GridHeader}"
                           CellStyle="{StaticResource GridCell}"
                           RowHeight="46">
@@ -249,7 +256,6 @@
                                             Binding="{Binding ChildRange}"
                                             Width="110"/>
 
-                        <!-- Actions column -->
                         <DataGridTemplateColumn Header="Actions" Width="130" CanUserSort="False">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
@@ -258,8 +264,8 @@
                                                 Margin="8,0">
                                         <Button Content="Edit"
                                                 Style="{StaticResource RowActionButton}"
-                                                Background="#E3F2FD"
-                                                BorderBrush="#90CAF9"
+                                                Background="#EBF3FF"
+                                                BorderBrush="#BFDBFE"
                                                 Foreground="{StaticResource PrimaryBrush}"
                                                 Command="{Binding DataContext.EditCommand,
                                                     RelativeSource={RelativeSource AncestorType=DataGrid}}"
@@ -267,8 +273,8 @@
                                                 Margin="0,0,6,0"/>
                                         <Button Content="Archive"
                                                 Style="{StaticResource RowActionButton}"
-                                                Background="#FFF3E0"
-                                                BorderBrush="#FFCC80"
+                                                Background="#FFFBEB"
+                                                BorderBrush="#FCD34D"
                                                 Foreground="{StaticResource WarningBrush}"
                                                 Command="{Binding DataContext.ArchiveCommand,
                                                     RelativeSource={RelativeSource AncestorType=DataGrid}}"
@@ -282,17 +288,17 @@
                 </DataGrid>
             </Border>
 
-            <!-- ── Form panel ── -->
+            <!-- Form panel -->
             <Border Grid.Column="1"
                     Width="380"
                     Margin="14,0,0,0"
-                    Background="White"
-                    CornerRadius="10"
+                    Background="{StaticResource CardBrush}"
+                    CornerRadius="12"
                     BorderBrush="{StaticResource DividerBrush}"
                     BorderThickness="1"
                     Visibility="{Binding IsFormVisible, Converter={StaticResource BoolToVisibility}}">
                 <Border.Effect>
-                    <DropShadowEffect BlurRadius="10" ShadowDepth="1" Color="#000000" Opacity="0.05"/>
+                    <DropShadowEffect BlurRadius="18" ShadowDepth="2" Color="#000000" Opacity="0.05"/>
                 </Border.Effect>
 
                 <DockPanel>
@@ -302,7 +308,7 @@
                             BorderBrush="{StaticResource DividerBrush}" BorderThickness="0,0,0,1"
                             Padding="20,16">
                         <TextBlock Text="{Binding FormTitle}"
-                                   FontSize="17" FontWeight="SemiBold"
+                                   FontSize="16" FontWeight="SemiBold" FontFamily="Segoe UI"
                                    Foreground="{StaticResource TextPrimaryBrush}"/>
                     </Border>
 
@@ -311,12 +317,11 @@
                             BorderBrush="{StaticResource DividerBrush}" BorderThickness="0,1,0,0"
                             Padding="20,14">
                         <StackPanel>
-                            <!-- Validation error -->
-                            <Border Background="#FFEBEE" CornerRadius="6" Padding="12,8"
+                            <Border Background="#FEF2F2" CornerRadius="8" Padding="12,8"
                                     Margin="0,0,0,12"
                                     Visibility="{Binding FormError, Converter={StaticResource StringToVisibility}}">
                                 <TextBlock Text="{Binding FormError}"
-                                           FontSize="13"
+                                           FontSize="13" FontFamily="Segoe UI"
                                            Foreground="{StaticResource ErrorBrush}"
                                            TextWrapping="Wrap"/>
                             </Border>
@@ -334,7 +339,7 @@
                                 <Button Grid.Column="2"
                                         Command="{Binding SaveCommand}"
                                         Style="{StaticResource PrimaryButton}"
-                                        Height="44" FontSize="14"
+                                        Height="44" FontSize="13"
                                         Content="Save Test"/>
                             </Grid>
                         </StackPanel>
@@ -344,34 +349,29 @@
                     <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="20,16,20,0">
                         <StackPanel>
 
-                            <!-- Test Name -->
                             <TextBlock Text="Test Name *" Style="{StaticResource LabelText}"/>
                             <TextBox Text="{Binding FormTestName, UpdateSourceTrigger=PropertyChanged}"
                                      Style="{StaticResource InputField}"
                                      Margin="0,0,0,16"/>
 
-                            <!-- Category -->
                             <TextBlock Text="Category *" Style="{StaticResource LabelText}"/>
                             <TextBox Text="{Binding FormCategory, UpdateSourceTrigger=PropertyChanged}"
                                      Style="{StaticResource InputField}"
                                      Margin="0,0,0,16"/>
 
-                            <!-- Sample Type -->
                             <TextBlock Text="Sample Type *" Style="{StaticResource LabelText}"/>
                             <TextBox Text="{Binding FormSampleType, UpdateSourceTrigger=PropertyChanged}"
                                      Style="{StaticResource InputField}"
                                      Margin="0,0,0,16"/>
 
-                            <!-- Unit -->
                             <TextBlock Text="Unit *" Style="{StaticResource LabelText}"/>
                             <TextBox Text="{Binding FormUnit, UpdateSourceTrigger=PropertyChanged}"
                                      Style="{StaticResource InputField}"
                                      Margin="0,0,0,16"/>
 
-                            <!-- Decimal Precision -->
                             <TextBlock Text="Decimal Precision" Style="{StaticResource LabelText}"/>
                             <ComboBox SelectedIndex="{Binding FormDecimalPrecision}"
-                                      Height="46" FontSize="14"
+                                      Height="44" FontSize="13" FontFamily="Segoe UI"
                                       Margin="0,0,0,20"
                                       Padding="10,0">
                                 <ComboBoxItem>0 decimal places</ComboBoxItem>
@@ -380,13 +380,12 @@
                                 <ComboBoxItem>3 decimal places</ComboBoxItem>
                             </ComboBox>
 
-                            <!-- Divider -->
                             <Border Height="1" Background="{StaticResource DividerBrush}" Margin="0,0,0,16"/>
-                            <TextBlock Text="REFERENCE RANGES" FontSize="11" FontWeight="Bold"
+                            <TextBlock Text="REFERENCE RANGES" FontSize="10" FontWeight="Bold"
+                                       FontFamily="Segoe UI"
                                        Foreground="{StaticResource TextSecondaryBrush}"
                                        Margin="0,0,0,14"/>
 
-                            <!-- Male Range -->
                             <TextBlock Text="Male Range (Min / Max)" Style="{StaticResource LabelText}"/>
                             <Grid Margin="0,0,0,14">
                                 <Grid.ColumnDefinitions>
@@ -397,16 +396,14 @@
                                 <TextBox Grid.Column="0"
                                          Text="{Binding FormMaleMin, UpdateSourceTrigger=PropertyChanged}"
                                          Style="{StaticResource InputField}"/>
-                                <TextBlock Grid.Column="1" Text="–"
-                                           FontSize="18" HorizontalAlignment="Center"
-                                           VerticalAlignment="Center"
+                                <TextBlock Grid.Column="1" Text="–" FontSize="18"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"
                                            Foreground="{StaticResource TextSecondaryBrush}"/>
                                 <TextBox Grid.Column="2"
                                          Text="{Binding FormMaleMax, UpdateSourceTrigger=PropertyChanged}"
                                          Style="{StaticResource InputField}"/>
                             </Grid>
 
-                            <!-- Female Range -->
                             <TextBlock Text="Female Range (Min / Max)" Style="{StaticResource LabelText}"/>
                             <Grid Margin="0,0,0,14">
                                 <Grid.ColumnDefinitions>
@@ -417,16 +414,14 @@
                                 <TextBox Grid.Column="0"
                                          Text="{Binding FormFemaleMin, UpdateSourceTrigger=PropertyChanged}"
                                          Style="{StaticResource InputField}"/>
-                                <TextBlock Grid.Column="1" Text="–"
-                                           FontSize="18" HorizontalAlignment="Center"
-                                           VerticalAlignment="Center"
+                                <TextBlock Grid.Column="1" Text="–" FontSize="18"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"
                                            Foreground="{StaticResource TextSecondaryBrush}"/>
                                 <TextBox Grid.Column="2"
                                          Text="{Binding FormFemaleMax, UpdateSourceTrigger=PropertyChanged}"
                                          Style="{StaticResource InputField}"/>
                             </Grid>
 
-                            <!-- Child Range -->
                             <TextBlock Text="Child Range (Min / Max)" Style="{StaticResource LabelText}"/>
                             <Grid Margin="0,0,0,14">
                                 <Grid.ColumnDefinitions>
@@ -437,16 +432,14 @@
                                 <TextBox Grid.Column="0"
                                          Text="{Binding FormChildMin, UpdateSourceTrigger=PropertyChanged}"
                                          Style="{StaticResource InputField}"/>
-                                <TextBlock Grid.Column="1" Text="–"
-                                           FontSize="18" HorizontalAlignment="Center"
-                                           VerticalAlignment="Center"
+                                <TextBlock Grid.Column="1" Text="–" FontSize="18"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"
                                            Foreground="{StaticResource TextSecondaryBrush}"/>
                                 <TextBox Grid.Column="2"
                                          Text="{Binding FormChildMax, UpdateSourceTrigger=PropertyChanged}"
                                          Style="{StaticResource InputField}"/>
                             </Grid>
 
-                            <!-- Notes -->
                             <Border Height="1" Background="{StaticResource DividerBrush}" Margin="0,4,0,16"/>
                             <TextBlock Text="Notes" Style="{StaticResource LabelText}"/>
                             <TextBox Text="{Binding FormNotes, UpdateSourceTrigger=PropertyChanged}"
@@ -454,7 +447,7 @@
                                      TextWrapping="Wrap"
                                      AcceptsReturn="True"
                                      VerticalScrollBarVisibility="Auto"
-                                     FontSize="14"
+                                     FontSize="13" FontFamily="Segoe UI"
                                      Padding="12,10"
                                      BorderBrush="{StaticResource DividerBrush}"
                                      BorderThickness="1"
@@ -465,10 +458,10 @@
                                         <Setter Property="Template">
                                             <Setter.Value>
                                                 <ControlTemplate TargetType="TextBox">
-                                                    <Border Background="White"
+                                                    <Border Background="{StaticResource CardBrush}"
                                                             BorderBrush="{TemplateBinding BorderBrush}"
                                                             BorderThickness="{TemplateBinding BorderThickness}"
-                                                            CornerRadius="6">
+                                                            CornerRadius="8">
                                                         <ScrollViewer x:Name="PART_ContentHost"
                                                                       Padding="{TemplateBinding Padding}"/>
                                                     </Border>
@@ -486,16 +479,16 @@
                                 </TextBox.Style>
                             </TextBox>
 
-                            <!-- PRICING section (edit mode only) -->
+                            <!-- PRICING (edit mode only) -->
                             <Border Height="1" Background="{StaticResource DividerBrush}" Margin="0,0,0,16"
                                     Visibility="{Binding IsEditing, Converter={StaticResource BoolToVisibility}}"/>
 
                             <StackPanel Visibility="{Binding IsEditing, Converter={StaticResource BoolToVisibility}}">
-                                <TextBlock Text="PRICING TIERS" FontSize="11" FontWeight="Bold"
+                                <TextBlock Text="PRICING TIERS" FontSize="10" FontWeight="Bold"
+                                           FontFamily="Segoe UI"
                                            Foreground="{StaticResource TextSecondaryBrush}"
                                            Margin="0,0,0,10"/>
 
-                                <!-- Existing prices list -->
                                 <ItemsControl ItemsSource="{Binding Prices}" Margin="0,0,0,10">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
@@ -506,13 +499,18 @@
                                                     <ColumnDefinition Width="32"/>
                                                 </Grid.ColumnDefinitions>
                                                 <TextBlock Grid.Column="0" Text="{Binding TierName}"
-                                                           FontSize="13" VerticalAlignment="Center"/>
+                                                           FontSize="13" FontFamily="Segoe UI"
+                                                           VerticalAlignment="Center"/>
                                                 <TextBlock Grid.Column="1" Text="{Binding PriceDisplay}"
                                                            FontSize="13" FontWeight="SemiBold"
+                                                           FontFamily="Segoe UI"
                                                            Foreground="{StaticResource PrimaryBrush}"
-                                                           VerticalAlignment="Center" HorizontalAlignment="Right"
+                                                           VerticalAlignment="Center"
+                                                           HorizontalAlignment="Right"
                                                            Margin="0,0,8,0"/>
-                                                <Button Grid.Column="2" Content="✕"
+                                                <Button Grid.Column="2"
+                                                        Content="&#xE711;"
+                                                        FontFamily="Segoe MDL2 Assets"
                                                         Width="28" Height="28" FontSize="12"
                                                         Background="Transparent" BorderThickness="0"
                                                         Cursor="Hand" VerticalAlignment="Center"
@@ -553,12 +551,12 @@
                                             Height="40" FontSize="13" Padding="12,0"/>
                                 </Grid>
 
-                                <!-- Price form error -->
-                                <Border Background="#FFEBEE" CornerRadius="6" Padding="10,7"
+                                <Border Background="#FEF2F2" CornerRadius="8" Padding="10,7"
                                         Margin="0,4,0,0"
                                         Visibility="{Binding HasPriceFormError, Converter={StaticResource BoolToVisibility}}">
                                     <TextBlock Text="{Binding PriceFormError}"
-                                               FontSize="12" Foreground="{StaticResource ErrorBrush}"
+                                               FontSize="12" FontFamily="Segoe UI"
+                                               Foreground="{StaticResource ErrorBrush}"
                                                TextWrapping="Wrap"/>
                                 </Border>
                             </StackPanel>

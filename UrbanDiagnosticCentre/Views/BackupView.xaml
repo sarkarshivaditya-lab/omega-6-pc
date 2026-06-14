@@ -10,20 +10,22 @@
 
         <!-- Action card -->
         <Style x:Key="ActionCard" TargetType="Border">
-            <Setter Property="CornerRadius" Value="10"/>
-            <Setter Property="Padding" Value="26"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Padding" Value="24"/>
             <Setter Property="Effect">
                 <Setter.Value>
-                    <DropShadowEffect BlurRadius="10" ShadowDepth="1" Color="#000000" Opacity="0.07"/>
+                    <DropShadowEffect BlurRadius="14" ShadowDepth="1"
+                                      Color="#000000" Opacity="0.05"/>
                 </Setter.Value>
             </Setter>
         </Style>
 
         <!-- Outline (browse) button -->
         <Style x:Key="OutlineButton" TargetType="Button">
-            <Setter Property="Height" Value="38"/>
+            <Setter Property="Height" Value="40"/>
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
             <Setter Property="Background" Value="White"/>
             <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}"/>
             <Setter Property="BorderBrush" Value="{StaticResource PrimaryBrush}"/>
@@ -37,13 +39,13 @@
                                 Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="6">
+                                CornerRadius="8">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"
                                               Margin="{TemplateBinding Padding}"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="bd" Property="Background" Value="#E3F2FD"/>
+                                <Setter TargetName="bd" Property="Background" Value="#EBF3FF"/>
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter TargetName="bd" Property="Opacity" Value="0.45"/>
@@ -56,22 +58,23 @@
 
         <!-- Warning (orange) button for Restore -->
         <Style x:Key="WarningButton" TargetType="Button">
-            <Setter Property="Height" Value="48"/>
-            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Height" Value="44"/>
+            <Setter Property="FontSize" Value="13"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Background" Value="#E65100"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="Background" Value="#D97706"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border x:Name="bd" Background="{TemplateBinding Background}" CornerRadius="6">
+                        <Border x:Name="bd" Background="{TemplateBinding Background}" CornerRadius="8">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="bd" Property="Background" Value="#BF360C"/>
+                                <Setter TargetName="bd" Property="Background" Value="#B45309"/>
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter TargetName="bd" Property="Opacity" Value="0.45"/>
@@ -84,22 +87,23 @@
 
         <!-- Success (green) button for Open Folder -->
         <Style x:Key="SuccessButton" TargetType="Button">
-            <Setter Property="Height" Value="48"/>
-            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Height" Value="44"/>
+            <Setter Property="FontSize" Value="13"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Background" Value="#2E7D32"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="Background" Value="{StaticResource SuccessBrush}"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border x:Name="bd" Background="{TemplateBinding Background}" CornerRadius="6">
+                        <Border x:Name="bd" Background="{TemplateBinding Background}" CornerRadius="8">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="bd" Property="Background" Value="#1B5E20"/>
+                                <Setter TargetName="bd" Property="Background" Value="#15803D"/>
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter TargetName="bd" Property="Opacity" Value="0.45"/>
@@ -112,6 +116,7 @@
 
         <!-- Section label -->
         <Style x:Key="SectionLabel" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Segoe UI"/>
             <Setter Property="FontSize" Value="10"/>
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
@@ -137,28 +142,36 @@
                         Style="{StaticResource GhostButton}"
                         Height="40" Padding="12,0" Margin="0,0,20,0" VerticalAlignment="Center">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="&#x2190;" FontSize="15" VerticalAlignment="Center" Margin="0,0,6,0"/>
-                        <TextBlock Text="Dashboard" FontSize="13" VerticalAlignment="Center"/>
+                        <TextBlock Text="&#xE830;" FontSize="14"
+                                   FontFamily="Segoe MDL2 Assets"
+                                   VerticalAlignment="Center" Margin="0,0,6,0"/>
+                        <TextBlock Text="Dashboard" FontSize="13"
+                                   FontFamily="Segoe UI" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
 
                 <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                    <TextBlock Text="Backup &amp; Restore" FontSize="18" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock Text="Backup &amp; Restore"
+                               FontSize="17" FontWeight="Bold"
+                               FontFamily="Segoe UI" Foreground="White"/>
                     <TextBlock Text="Safeguard your data — create backups and restore when needed"
-                               FontSize="11" Foreground="#90CAF9"/>
+                               FontSize="11" FontFamily="Segoe UI"
+                               Foreground="#7EB3F5"/>
                 </StackPanel>
             </Grid>
         </Border>
 
         <!-- ===== Content ===== -->
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-            <StackPanel Margin="36,28,36,36">
+            <StackPanel Margin="32,24,32,32">
 
                 <!-- Section label -->
-                <TextBlock Text="DATA MANAGEMENT" Style="{StaticResource SectionLabel}" Margin="0,0,0,14"/>
+                <TextBlock Text="DATA MANAGEMENT"
+                           Style="{StaticResource SectionLabel}"
+                           Margin="0,0,0,14"/>
 
                 <!-- ── Three action cards ── -->
-                <Grid Margin="0,0,0,22">
+                <Grid Margin="0,0,0,20">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
@@ -167,152 +180,222 @@
 
                     <!-- Card 1 – Create Backup -->
                     <Border Grid.Column="0" Style="{StaticResource ActionCard}"
-                            Background="#E3F2FD" Margin="0,0,10,0">
+                            Background="#EBF3FF" Margin="0,0,10,0"
+                            BorderBrush="#BFDBFE" BorderThickness="1">
                         <StackPanel>
-                            <TextBlock Text="&#x1F4BE;" FontSize="38" Margin="0,0,0,10"/>
-                            <TextBlock Text="Create Backup" FontSize="18" FontWeight="Bold"
-                                       Foreground="{StaticResource PrimaryBrush}" Margin="0,0,0,5"/>
+                            <Border Background="#DBEAFE" CornerRadius="10"
+                                    Width="44" Height="44" HorizontalAlignment="Left"
+                                    Margin="0,0,0,12">
+                                <TextBlock Text="&#xE74E;" FontSize="22"
+                                           FontFamily="Segoe MDL2 Assets"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
+                            </Border>
+                            <TextBlock Text="Create Backup"
+                                       FontSize="16" FontWeight="Bold"
+                                       FontFamily="Segoe UI"
+                                       Foreground="{StaticResource PrimaryBrush}"
+                                       Margin="0,0,0,4"/>
                             <TextBlock Text="Save a complete copy of all patient data and PDF reports to a ZIP file."
-                                       Style="{StaticResource BodyText}" TextWrapping="Wrap"
-                                       Margin="0,0,0,20"/>
+                                       Style="{StaticResource BodyText}"
+                                       TextWrapping="Wrap" Margin="0,0,0,18"/>
 
                             <TextBlock Text="SAVE TO FOLDER" Style="{StaticResource SectionLabel}"/>
-                            <Grid Margin="0,0,0,14">
+                            <Grid Margin="0,0,0,12">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <TextBox Grid.Column="0"
                                          Text="{Binding BackupDestinationFolder, UpdateSourceTrigger=PropertyChanged}"
-                                         Style="{StaticResource InputField}" Height="38" FontSize="12"
+                                         Style="{StaticResource InputField}" Height="40" FontSize="12"
                                          IsEnabled="{Binding IsWorking, Converter={StaticResource InverseBool}}"
                                          Margin="0,0,6,0"/>
                                 <Button Grid.Column="1"
                                         Click="BrowseDestination_Click"
-                                        Content="Browse…" Height="38"
+                                        Content="Browse…" Height="40"
                                         Style="{StaticResource OutlineButton}"
                                         IsEnabled="{Binding IsWorking, Converter={StaticResource InverseBool}}"/>
                             </Grid>
 
                             <!-- Disk space warning for destination drive -->
-                            <Border Background="#FFF3E0" CornerRadius="4" Padding="10,7"
-                                    Margin="0,0,0,14"
+                            <Border Background="#FEF3C7" CornerRadius="6" Padding="10,7"
+                                    Margin="0,0,0,12"
                                     Visibility="{Binding HasDestinationDiskWarning, Converter={StaticResource BoolToVisibility}}">
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="&#x26A0;" FontSize="13" Foreground="#E65100"
+                                    <TextBlock Text="&#xE7BA;" FontSize="12"
+                                               FontFamily="Segoe MDL2 Assets"
+                                               Foreground="{StaticResource WarningBrush}"
                                                Margin="0,0,8,0" VerticalAlignment="Center"/>
                                     <TextBlock Text="{Binding DestinationDiskWarning}"
-                                               FontSize="12" Foreground="#E65100"
+                                               FontSize="12" FontFamily="Segoe UI"
+                                               Foreground="{StaticResource WarningBrush}"
                                                TextWrapping="Wrap"/>
                                 </StackPanel>
                             </Border>
 
                             <Button Command="{Binding CreateBackupCommand}"
                                     Style="{StaticResource PrimaryButton}"
-                                    Content="&#x1F4BE;   Create Backup"
-                                    IsEnabled="{Binding IsWorking, Converter={StaticResource InverseBool}}"/>
+                                    Height="44"
+                                    IsEnabled="{Binding IsWorking, Converter={StaticResource InverseBool}}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xE74E;" FontSize="14"
+                                               FontFamily="Segoe MDL2 Assets"
+                                               VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                    <TextBlock Text="Create Backup" FontSize="13"
+                                               FontFamily="Segoe UI" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
                         </StackPanel>
                     </Border>
 
                     <!-- Card 2 – Restore Backup -->
                     <Border Grid.Column="1" Style="{StaticResource ActionCard}"
-                            Background="#FFF3E0" Margin="5,0,5,0">
+                            Background="#FFFBEB" Margin="5,0,5,0"
+                            BorderBrush="#FCD34D" BorderThickness="1">
                         <StackPanel>
-                            <TextBlock Text="&#x26A0;" FontSize="38" Foreground="#E65100" Margin="0,0,0,10"/>
-                            <TextBlock Text="Restore from Backup" FontSize="18" FontWeight="Bold"
-                                       Foreground="#E65100" Margin="0,0,0,5"/>
+                            <Border Background="#FEF3C7" CornerRadius="10"
+                                    Width="44" Height="44" HorizontalAlignment="Left"
+                                    Margin="0,0,0,12">
+                                <TextBlock Text="&#xE7BA;" FontSize="22"
+                                           FontFamily="Segoe MDL2 Assets"
+                                           Foreground="{StaticResource WarningBrush}"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
+                            </Border>
+                            <TextBlock Text="Restore from Backup"
+                                       FontSize="16" FontWeight="Bold"
+                                       FontFamily="Segoe UI"
+                                       Foreground="{StaticResource WarningBrush}"
+                                       Margin="0,0,0,4"/>
                             <TextBlock Text="Restores all data from a backup ZIP. A safety snapshot is created automatically before restoring."
-                                       Style="{StaticResource BodyText}" TextWrapping="Wrap"
-                                       Margin="0,0,0,8"/>
+                                       Style="{StaticResource BodyText}"
+                                       TextWrapping="Wrap" Margin="0,0,0,8"/>
 
-                            <Border Background="#FFCCBC" CornerRadius="4" Padding="9,6" Margin="0,0,0,16">
+                            <Border Background="#FEF3C7" CornerRadius="6" Padding="10,7"
+                                    Margin="0,0,0,14" BorderBrush="#FCD34D" BorderThickness="1">
                                 <TextBlock Text="Warning: all current data will be replaced."
-                                           FontSize="12" FontWeight="SemiBold" Foreground="#BF360C"
+                                           FontSize="12" FontWeight="SemiBold"
+                                           FontFamily="Segoe UI"
+                                           Foreground="#92400E"
                                            TextWrapping="Wrap"/>
                             </Border>
 
-                            <TextBlock Text="SELECT BACKUP FILE (.ZIP)" Style="{StaticResource SectionLabel}"/>
-                            <Grid Margin="0,0,0,14">
+                            <TextBlock Text="SELECT BACKUP FILE (.ZIP)"
+                                       Style="{StaticResource SectionLabel}"/>
+                            <Grid Margin="0,0,0,12">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <TextBox Grid.Column="0"
                                          Text="{Binding RestoreSourcePath, UpdateSourceTrigger=PropertyChanged}"
-                                         Style="{StaticResource InputField}" Height="38" FontSize="12"
+                                         Style="{StaticResource InputField}" Height="40" FontSize="12"
                                          IsEnabled="{Binding IsWorking, Converter={StaticResource InverseBool}}"
                                          Margin="0,0,6,0"/>
                                 <Button Grid.Column="1"
                                         Click="BrowseRestoreFile_Click"
-                                        Content="Browse…" Height="38"
+                                        Content="Browse…" Height="40"
                                         Style="{StaticResource OutlineButton}"
                                         IsEnabled="{Binding IsWorking, Converter={StaticResource InverseBool}}"/>
                             </Grid>
 
                             <Button Command="{Binding RestoreBackupCommand}"
                                     Style="{StaticResource WarningButton}"
-                                    Content="&#x26A0;   Restore Backup"
-                                    IsEnabled="{Binding IsWorking, Converter={StaticResource InverseBool}}"/>
+                                    IsEnabled="{Binding IsWorking, Converter={StaticResource InverseBool}}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xE7BA;" FontSize="14"
+                                               FontFamily="Segoe MDL2 Assets"
+                                               VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                    <TextBlock Text="Restore Backup" FontSize="13"
+                                               FontFamily="Segoe UI" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
                         </StackPanel>
                     </Border>
 
                     <!-- Card 3 – Open Backup Folder -->
                     <Border Grid.Column="2" Style="{StaticResource ActionCard}"
-                            Background="#E8F5E9" Margin="10,0,0,0">
+                            Background="#F0FDF4" Margin="10,0,0,0"
+                            BorderBrush="#BBF7D0" BorderThickness="1">
                         <StackPanel>
-                            <TextBlock Text="&#x1F4C2;" FontSize="38" Margin="0,0,0,10"/>
-                            <TextBlock Text="Open Backup Folder" FontSize="18" FontWeight="Bold"
-                                       Foreground="{StaticResource SuccessBrush}" Margin="0,0,0,5"/>
+                            <Border Background="#DCFCE7" CornerRadius="10"
+                                    Width="44" Height="44" HorizontalAlignment="Left"
+                                    Margin="0,0,0,12">
+                                <TextBlock Text="&#xE838;" FontSize="22"
+                                           FontFamily="Segoe MDL2 Assets"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
+                            </Border>
+                            <TextBlock Text="Open Backup Folder"
+                                       FontSize="16" FontWeight="Bold"
+                                       FontFamily="Segoe UI"
+                                       Foreground="{StaticResource SuccessBrush}"
+                                       Margin="0,0,0,4"/>
                             <TextBlock Text="Browse your saved backups in File Explorer. Connect a USB drive to copy backups off-site."
-                                       Style="{StaticResource BodyText}" TextWrapping="Wrap"
-                                       Margin="0,0,0,20"/>
+                                       Style="{StaticResource BodyText}"
+                                       TextWrapping="Wrap" Margin="0,0,0,18"/>
 
-                            <TextBlock Text="CURRENT BACKUP LOCATION" Style="{StaticResource SectionLabel}"/>
-                            <Border Background="#C8E6C9" CornerRadius="6" Padding="10,8" Margin="0,0,0,16">
+                            <TextBlock Text="CURRENT BACKUP LOCATION"
+                                       Style="{StaticResource SectionLabel}"/>
+                            <Border Background="#DCFCE7" CornerRadius="8"
+                                    Padding="10,8" Margin="0,0,0,14">
                                 <TextBlock Text="{Binding BackupDestinationFolder}"
-                                           FontSize="12" Foreground="#2E7D32"
-                                           TextWrapping="Wrap" TextTrimming="CharacterEllipsis"/>
+                                           FontSize="12" FontFamily="Segoe UI"
+                                           Foreground="#15803D"
+                                           TextWrapping="Wrap"
+                                           TextTrimming="CharacterEllipsis"/>
                             </Border>
 
                             <Button Command="{Binding OpenBackupFolderCommand}"
-                                    Style="{StaticResource SuccessButton}"
-                                    Content="&#x1F4C2;   Open Folder"/>
+                                    Style="{StaticResource SuccessButton}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xE838;" FontSize="14"
+                                               FontFamily="Segoe MDL2 Assets"
+                                               VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                    <TextBlock Text="Open Folder" FontSize="13"
+                                               FontFamily="Segoe UI" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
                         </StackPanel>
                     </Border>
                 </Grid>
 
                 <!-- ── Status message ── -->
-                <Border CornerRadius="8" Padding="14,11" Margin="0,0,0,22"
+                <Border CornerRadius="10" Padding="14,11" Margin="0,0,0,20"
                         Visibility="{Binding StatusMessage, Converter={StaticResource StringToVisibility}}">
                     <Border.Style>
                         <Style TargetType="Border">
-                            <Setter Property="Background" Value="#E8F5E9"/>
-                            <Setter Property="BorderBrush" Value="#A5D6A7"/>
+                            <Setter Property="Background"    Value="#F0FDF4"/>
+                            <Setter Property="BorderBrush"   Value="#86EFAC"/>
                             <Setter Property="BorderThickness" Value="1"/>
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding StatusIsError}" Value="True">
-                                    <Setter Property="Background" Value="#FFEBEE"/>
-                                    <Setter Property="BorderBrush" Value="#EF9A9A"/>
+                                    <Setter Property="Background"    Value="#FEF2F2"/>
+                                    <Setter Property="BorderBrush"   Value="#FCA5A5"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </Border.Style>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock FontSize="15" Margin="0,0,10,0" VerticalAlignment="Top">
+                        <TextBlock FontSize="14" Margin="0,0,10,0" VerticalAlignment="Top">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
-                                    <Setter Property="Text" Value="&#x2714;"/>
+                                    <Setter Property="Text"       Value="&#xE73E;"/>
+                                    <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
                                     <Setter Property="Foreground" Value="{StaticResource SuccessBrush}"/>
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding StatusIsError}" Value="True">
-                                            <Setter Property="Text" Value="&#x26A0;"/>
+                                            <Setter Property="Text"       Value="&#xE7BA;"/>
+                                            <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
                                             <Setter Property="Foreground" Value="{StaticResource ErrorBrush}"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
                             </TextBlock.Style>
                         </TextBlock>
-                        <TextBlock Text="{Binding StatusMessage}" FontSize="13"
+                        <TextBlock Text="{Binding StatusMessage}"
+                                   FontSize="13" FontFamily="Segoe UI"
                                    TextWrapping="Wrap" VerticalAlignment="Center">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
@@ -329,13 +412,14 @@
                 </Border>
 
                 <!-- ── Recent Backups ── -->
-                <Border Background="{StaticResource CardBrush}" CornerRadius="10" Padding="24">
+                <Border Background="{StaticResource CardBrush}" CornerRadius="12" Padding="24">
                     <Border.Effect>
-                        <DropShadowEffect BlurRadius="10" ShadowDepth="1" Color="#000000" Opacity="0.06"/>
+                        <DropShadowEffect BlurRadius="18" ShadowDepth="2"
+                                          Color="#000000" Opacity="0.05"/>
                     </Border.Effect>
                     <StackPanel>
 
-                        <Grid Margin="0,0,0,14">
+                        <Grid Margin="0,0,0,12">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
@@ -344,7 +428,8 @@
                                        Style="{StaticResource HeadingMedium}"/>
                             <TextBlock Grid.Column="1"
                                        Text="{Binding RecentBackups.Count, StringFormat='{}{0} recorded'}"
-                                       Style="{StaticResource BodyText}" VerticalAlignment="Center"/>
+                                       Style="{StaticResource BodyText}"
+                                       VerticalAlignment="Center"/>
                         </Grid>
 
                         <Border Height="1" Background="{StaticResource DividerBrush}"/>
@@ -352,15 +437,17 @@
                         <!-- Empty state -->
                         <StackPanel Margin="0,24,0,8" HorizontalAlignment="Center"
                                     Visibility="{Binding HasNoRecentBackups, Converter={StaticResource BoolToVisibility}}">
-                            <TextBlock Text="No backups recorded yet." FontSize="14"
+                            <TextBlock Text="No backups recorded yet."
+                                       FontSize="14" FontFamily="Segoe UI"
                                        Foreground="{StaticResource TextSecondaryBrush}"
                                        HorizontalAlignment="Center"/>
                             <TextBlock Text="Create your first backup using the button above."
-                                       FontSize="12" Foreground="{StaticResource TextSecondaryBrush}"
+                                       FontSize="12" FontFamily="Segoe UI"
+                                       Foreground="{StaticResource TextSecondaryBrush}"
                                        HorizontalAlignment="Center" Margin="0,6,0,0"/>
                         </StackPanel>
 
-                        <!-- Table (hidden when empty) -->
+                        <!-- Table -->
                         <Grid>
                             <Grid.Style>
                                 <Style TargetType="Grid">
@@ -382,17 +469,21 @@
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Grid.Column="0" Text="Date &amp; Time"
-                                               FontSize="11" FontWeight="SemiBold"
-                                               Foreground="{StaticResource TextSecondaryBrush}" Padding="0,6,0,6"/>
+                                               FontSize="11" FontWeight="SemiBold" FontFamily="Segoe UI"
+                                               Foreground="{StaticResource TextSecondaryBrush}"
+                                               Padding="0,6"/>
                                     <TextBlock Grid.Column="1" Text="Size"
-                                               FontSize="11" FontWeight="SemiBold"
-                                               Foreground="{StaticResource TextSecondaryBrush}" Padding="0,6,0,6"/>
+                                               FontSize="11" FontWeight="SemiBold" FontFamily="Segoe UI"
+                                               Foreground="{StaticResource TextSecondaryBrush}"
+                                               Padding="0,6"/>
                                     <TextBlock Grid.Column="2" Text="Type"
-                                               FontSize="11" FontWeight="SemiBold"
-                                               Foreground="{StaticResource TextSecondaryBrush}" Padding="0,6,0,6"/>
+                                               FontSize="11" FontWeight="SemiBold" FontFamily="Segoe UI"
+                                               Foreground="{StaticResource TextSecondaryBrush}"
+                                               Padding="0,6"/>
                                     <TextBlock Grid.Column="3" Text="Path"
-                                               FontSize="11" FontWeight="SemiBold"
-                                               Foreground="{StaticResource TextSecondaryBrush}" Padding="0,6,0,6"/>
+                                               FontSize="11" FontWeight="SemiBold" FontFamily="Segoe UI"
+                                               Foreground="{StaticResource TextSecondaryBrush}"
+                                               Padding="0,6"/>
                                 </Grid>
 
                                 <!-- Rows -->
@@ -411,36 +502,40 @@
 
                                                     <TextBlock Grid.Column="0"
                                                                Text="{Binding BackupDate, StringFormat='dd MMM yyyy, hh:mm tt'}"
-                                                               FontSize="13" VerticalAlignment="Center"
+                                                               FontSize="13" FontFamily="Segoe UI"
+                                                               VerticalAlignment="Center"
                                                                Foreground="{StaticResource TextPrimaryBrush}"/>
 
                                                     <TextBlock Grid.Column="1"
                                                                Text="{Binding SizeDisplay}"
-                                                               FontSize="13" VerticalAlignment="Center"
+                                                               FontSize="13" FontFamily="Segoe UI"
+                                                               VerticalAlignment="Center"
                                                                Foreground="{StaticResource TextSecondaryBrush}"/>
 
                                                     <!-- Type badge -->
                                                     <Border Grid.Column="2" VerticalAlignment="Center"
-                                                            CornerRadius="4" Padding="7,3" HorizontalAlignment="Left">
+                                                            CornerRadius="6" Padding="7,3"
+                                                            HorizontalAlignment="Left">
                                                         <Border.Style>
                                                             <Style TargetType="Border">
-                                                                <Setter Property="Background" Value="#E3F2FD"/>
+                                                                <Setter Property="Background" Value="#EBF3FF"/>
                                                                 <Style.Triggers>
                                                                     <DataTrigger Binding="{Binding IsAutoBackup}" Value="True">
-                                                                        <Setter Property="Background" Value="#FFF3E0"/>
+                                                                        <Setter Property="Background" Value="#FEF3C7"/>
                                                                     </DataTrigger>
                                                                 </Style.Triggers>
                                                             </Style>
                                                         </Border.Style>
                                                         <TextBlock Text="{Binding TypeDisplay}"
-                                                                   FontSize="11" FontWeight="SemiBold">
+                                                                   FontSize="11" FontWeight="SemiBold"
+                                                                   FontFamily="Segoe UI">
                                                             <TextBlock.Style>
                                                                 <Style TargetType="TextBlock">
                                                                     <Setter Property="Foreground"
                                                                             Value="{StaticResource PrimaryBrush}"/>
                                                                     <Style.Triggers>
                                                                         <DataTrigger Binding="{Binding IsAutoBackup}" Value="True">
-                                                                            <Setter Property="Foreground" Value="#E65100"/>
+                                                                            <Setter Property="Foreground" Value="#B45309"/>
                                                                         </DataTrigger>
                                                                     </Style.Triggers>
                                                                 </Style>
@@ -450,7 +545,8 @@
 
                                                     <TextBlock Grid.Column="3"
                                                                Text="{Binding BackupPath}"
-                                                               FontSize="12" VerticalAlignment="Center"
+                                                               FontSize="12" FontFamily="Segoe UI"
+                                                               VerticalAlignment="Center"
                                                                Foreground="{StaticResource TextSecondaryBrush}"
                                                                TextTrimming="CharacterEllipsis"
                                                                ToolTip="{Binding BackupPath}"

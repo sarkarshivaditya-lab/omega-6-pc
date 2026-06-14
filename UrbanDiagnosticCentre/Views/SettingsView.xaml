@@ -8,32 +8,27 @@
         <helpers:InverseBoolConverter x:Key="InverseBool"/>
         <helpers:StringToVisibilityConverter x:Key="StringToVisibility"/>
 
-        <!-- Section heading label -->
         <Style x:Key="SectionLabel" TargetType="TextBlock">
-            <Setter Property="FontSize"   Value="10"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
-            <Setter Property="Margin"     Value="0,0,0,14"/>
+            <Setter Property="FontSize"       Value="10"/>
+            <Setter Property="FontWeight"     Value="Bold"/>
+            <Setter Property="FontFamily"     Value="Segoe UI"/>
+            <Setter Property="Foreground"     Value="{StaticResource TextSecondaryBrush}"/>
+            <Setter Property="Margin"         Value="0,0,0,14"/>
         </Style>
 
-        <!-- Form row label -->
         <Style x:Key="FieldLabel" TargetType="TextBlock">
-            <Setter Property="FontSize"            Value="13"/>
-            <Setter Property="FontWeight"          Value="SemiBold"/>
-            <Setter Property="Foreground"          Value="{StaticResource TextSecondaryBrush}"/>
-            <Setter Property="VerticalAlignment"   Value="Center"/>
+            <Setter Property="FontSize"          Value="13"/>
+            <Setter Property="FontWeight"        Value="SemiBold"/>
+            <Setter Property="FontFamily"        Value="Segoe UI"/>
+            <Setter Property="Foreground"        Value="{StaticResource TextSecondaryBrush}"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
 
-        <!-- Future-ready field label (subdued) -->
-        <Style x:Key="FutureFieldLabel" TargetType="TextBlock" BasedOn="{StaticResource FieldLabel}">
-            <Setter Property="Foreground" Value="#BDBDBD"/>
-        </Style>
-
-        <!-- Browse button (outline) -->
         <Style x:Key="BrowseButton" TargetType="Button">
-            <Setter Property="Height"          Value="46"/>
+            <Setter Property="Height"          Value="44"/>
             <Setter Property="FontSize"        Value="13"/>
             <Setter Property="FontWeight"      Value="SemiBold"/>
+            <Setter Property="FontFamily"      Value="Segoe UI"/>
             <Setter Property="Background"      Value="White"/>
             <Setter Property="Foreground"      Value="{StaticResource PrimaryBrush}"/>
             <Setter Property="BorderBrush"     Value="{StaticResource PrimaryBrush}"/>
@@ -47,13 +42,13 @@
                                 Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="6">
+                                CornerRadius="8">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"
                                               Margin="{TemplateBinding Padding}"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="bd" Property="Background" Value="#E3F2FD"/>
+                                <Setter TargetName="bd" Property="Background" Value="#EBF3FF"/>
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter TargetName="bd" Property="Opacity" Value="0.4"/>
@@ -84,62 +79,70 @@
                         Style="{StaticResource GhostButton}"
                         Height="40" Padding="12,0" Margin="0,0,20,0" VerticalAlignment="Center">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="&#x2190;" FontSize="15" VerticalAlignment="Center" Margin="0,0,6,0"/>
-                        <TextBlock Text="Dashboard" FontSize="13" VerticalAlignment="Center"/>
+                        <TextBlock Text="&#xE830;" FontSize="14" FontFamily="Segoe MDL2 Assets"
+                                   VerticalAlignment="Center" Margin="0,0,6,0"/>
+                        <TextBlock Text="Dashboard" FontSize="13" FontFamily="Segoe UI"
+                                   VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
 
                 <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                    <TextBlock Text="Settings &amp; Branding" FontSize="18" FontWeight="Bold" Foreground="White"/>
-                    <TextBlock Text="{Binding LastSavedDisplay}" FontSize="11" Foreground="#90CAF9"/>
+                    <TextBlock Text="Settings &amp; Branding"
+                               FontSize="17" FontWeight="Bold" FontFamily="Segoe UI"
+                               Foreground="White"/>
+                    <TextBlock Text="{Binding LastSavedDisplay}"
+                               FontSize="11" FontFamily="Segoe UI"
+                               Foreground="#7EB3F5"/>
                 </StackPanel>
 
-                <!-- Admin badge -->
-                <Border Grid.Column="2" CornerRadius="4" Padding="10,4" VerticalAlignment="Center"
+                <Border Grid.Column="2" CornerRadius="6" Padding="12,5" VerticalAlignment="Center"
+                        Background="#18FFFFFF"
                         Visibility="{Binding IsAdmin, Converter={StaticResource BoolToVisibility}}">
-                    <Border.Background><SolidColorBrush Color="#1AFFFFFF"/></Border.Background>
-                    <TextBlock Text="Admin" FontSize="12" FontWeight="SemiBold" Foreground="#90CAF9"/>
+                    <TextBlock Text="Admin" FontSize="12" FontWeight="SemiBold"
+                               FontFamily="Segoe UI" Foreground="#7EB3F5"/>
                 </Border>
             </Grid>
         </Border>
 
-        <!-- ===== Content (single scroll for all roles) ===== -->
+        <!-- ===== Content ===== -->
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-            <StackPanel Margin="36,28,36,36">
+            <StackPanel Margin="32,24,32,36">
 
-                <!-- Non-admin notice (inline — admin settings hidden below) -->
+                <!-- Non-admin notice -->
                 <Border Visibility="{Binding IsNotAdmin, Converter={StaticResource BoolToVisibility}}"
-                        Background="#FFF8E1" BorderBrush="#FFE082" BorderThickness="1"
+                        Background="#FFFBEB" BorderBrush="#FCD34D" BorderThickness="1"
                         CornerRadius="10" Padding="18,14" Margin="0,0,0,24">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="&#x1F512;" FontSize="26"
+                        <TextBlock Grid.Column="0" Text="&#xE72E;" FontSize="26"
+                                   FontFamily="Segoe MDL2 Assets"
                                    VerticalAlignment="Center" Margin="0,0,14,0"/>
                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
                             <TextBlock Text="Admin Access Required"
-                                       FontSize="14" FontWeight="Bold"
+                                       FontSize="14" FontWeight="Bold" FontFamily="Segoe UI"
                                        Foreground="{StaticResource TextPrimaryBrush}"
                                        Margin="0,0,0,3"/>
                             <TextBlock Text="Organisation settings can only be modified by an Administrator. You can still change your own password below."
-                                       FontSize="12" Foreground="{StaticResource TextSecondaryBrush}"
+                                       FontSize="12" FontFamily="Segoe UI"
+                                       Foreground="{StaticResource TextSecondaryBrush}"
                                        TextWrapping="Wrap"/>
                         </StackPanel>
                     </Grid>
                 </Border>
 
-                <!-- Admin settings (admin only) -->
+                <!-- Admin-only settings -->
                 <StackPanel Visibility="{Binding IsAdmin, Converter={StaticResource BoolToVisibility}}">
 
-                    <!-- ── ORGANISATION & BRANDING ── -->
+                    <!-- ORGANISATION & BRANDING -->
                     <TextBlock Text="ORGANISATION &amp; BRANDING" Style="{StaticResource SectionLabel}"/>
 
-                    <Border Background="{StaticResource CardBrush}" CornerRadius="10" Padding="24"
+                    <Border Background="{StaticResource CardBrush}" CornerRadius="12" Padding="24"
                             Margin="0,0,0,20">
                         <Border.Effect>
-                            <DropShadowEffect BlurRadius="10" ShadowDepth="1" Color="#000000" Opacity="0.06"/>
+                            <DropShadowEffect BlurRadius="18" ShadowDepth="2" Color="#000000" Opacity="0.05"/>
                         </Border.Effect>
                         <StackPanel>
 
@@ -208,18 +211,19 @@
                                            Width="90"/>
                             </Grid>
                             <TextBlock Text="PNG or JPG recommended. Appears in the top-left of printed PDF reports."
-                                       FontSize="11" Foreground="{StaticResource TextSecondaryBrush}"
+                                       FontSize="11" FontFamily="Segoe UI"
+                                       Foreground="{StaticResource TextSecondaryBrush}"
                                        Margin="160,4,0,0"/>
                         </StackPanel>
                     </Border>
 
-                    <!-- ── PDF DEFAULTS ── -->
+                    <!-- PDF DEFAULTS -->
                     <TextBlock Text="PDF DEFAULTS" Style="{StaticResource SectionLabel}"/>
 
-                    <Border Background="{StaticResource CardBrush}" CornerRadius="10" Padding="24"
+                    <Border Background="{StaticResource CardBrush}" CornerRadius="12" Padding="24"
                             Margin="0,0,0,20">
                         <Border.Effect>
-                            <DropShadowEffect BlurRadius="10" ShadowDepth="1" Color="#000000" Opacity="0.06"/>
+                            <DropShadowEffect BlurRadius="18" ShadowDepth="2" Color="#000000" Opacity="0.05"/>
                         </Border.Effect>
                         <StackPanel>
 
@@ -231,7 +235,8 @@
                                 <StackPanel Grid.Column="0" VerticalAlignment="Top" Margin="0,10,0,0">
                                     <TextBlock Text="Footer Note" Style="{StaticResource FieldLabel}"/>
                                     <TextBlock Text="(replaces default disclaimer)"
-                                               FontSize="10" Foreground="{StaticResource TextSecondaryBrush}"
+                                               FontSize="10" FontFamily="Segoe UI"
+                                               Foreground="{StaticResource TextSecondaryBrush}"
                                                TextWrapping="Wrap" Margin="0,3,8,0"/>
                                 </StackPanel>
                                 <TextBox Grid.Column="1"
@@ -248,7 +253,8 @@
                                 </Grid.ColumnDefinitions>
                                 <StackPanel Grid.Column="0" VerticalAlignment="Center">
                                     <TextBlock Text="GST / Tax ID" Style="{StaticResource FieldLabel}"/>
-                                    <TextBlock Text="future-ready" FontSize="10" Foreground="#BDBDBD"/>
+                                    <TextBlock Text="future-ready" FontSize="10" FontFamily="Segoe UI"
+                                               Foreground="{StaticResource TextSecondaryBrush}"/>
                                 </StackPanel>
                                 <TextBox Grid.Column="1"
                                          Text="{Binding GstTaxId, UpdateSourceTrigger=PropertyChanged}"
@@ -262,7 +268,8 @@
                                 </Grid.ColumnDefinitions>
                                 <StackPanel Grid.Column="0" VerticalAlignment="Center">
                                     <TextBlock Text="Watermark Text" Style="{StaticResource FieldLabel}"/>
-                                    <TextBlock Text="future-ready" FontSize="10" Foreground="#BDBDBD"/>
+                                    <TextBlock Text="future-ready" FontSize="10" FontFamily="Segoe UI"
+                                               Foreground="{StaticResource TextSecondaryBrush}"/>
                                 </StackPanel>
                                 <TextBox Grid.Column="1"
                                          Text="{Binding WatermarkText, UpdateSourceTrigger=PropertyChanged}"
@@ -271,13 +278,13 @@
                         </StackPanel>
                     </Border>
 
-                    <!-- ── PRICING ── -->
+                    <!-- PRICING -->
                     <TextBlock Text="PRICING" Style="{StaticResource SectionLabel}"/>
 
-                    <Border Background="{StaticResource CardBrush}" CornerRadius="10" Padding="24"
+                    <Border Background="{StaticResource CardBrush}" CornerRadius="12" Padding="24"
                             Margin="0,0,0,20">
                         <Border.Effect>
-                            <DropShadowEffect BlurRadius="10" ShadowDepth="1" Color="#000000" Opacity="0.06"/>
+                            <DropShadowEffect BlurRadius="18" ShadowDepth="2" Color="#000000" Opacity="0.05"/>
                         </Border.Effect>
                         <StackPanel>
                             <Grid Margin="0,0,0,4">
@@ -287,7 +294,7 @@
                                 </Grid.ColumnDefinitions>
                                 <StackPanel Grid.Column="0" VerticalAlignment="Center">
                                     <TextBlock Text="Default Price Tier" Style="{StaticResource FieldLabel}"/>
-                                    <TextBlock Text="applied to new reports" FontSize="10"
+                                    <TextBlock Text="applied to new reports" FontSize="10" FontFamily="Segoe UI"
                                                Foreground="{StaticResource TextSecondaryBrush}"
                                                TextWrapping="Wrap" Margin="0,3,8,0"/>
                                 </StackPanel>
@@ -296,18 +303,19 @@
                                          Style="{StaticResource InputField}"/>
                             </Grid>
                             <TextBlock Text="Must match a tier name configured in Test Manager (e.g. Regular, Community). Leave blank to disable auto-selection."
-                                       FontSize="11" Foreground="{StaticResource TextSecondaryBrush}"
+                                       FontSize="11" FontFamily="Segoe UI"
+                                       Foreground="{StaticResource TextSecondaryBrush}"
                                        Margin="160,0,0,0" TextWrapping="Wrap"/>
                         </StackPanel>
                     </Border>
 
-                    <!-- ── STORAGE LOCATIONS ── -->
+                    <!-- STORAGE LOCATIONS -->
                     <TextBlock Text="STORAGE LOCATIONS" Style="{StaticResource SectionLabel}"/>
 
-                    <Border Background="{StaticResource CardBrush}" CornerRadius="10" Padding="24"
+                    <Border Background="{StaticResource CardBrush}" CornerRadius="12" Padding="24"
                             Margin="0,0,0,20">
                         <Border.Effect>
-                            <DropShadowEffect BlurRadius="10" ShadowDepth="1" Color="#000000" Opacity="0.06"/>
+                            <DropShadowEffect BlurRadius="18" ShadowDepth="2" Color="#000000" Opacity="0.05"/>
                         </Border.Effect>
                         <StackPanel>
 
@@ -330,7 +338,8 @@
                                          Width="90"/>
                             </Grid>
                             <TextBlock Text="Leave blank to use the default location (%LocalAppData%\UrbanDiagnosticCentre\Reports)."
-                                       FontSize="11" Foreground="{StaticResource TextSecondaryBrush}"
+                                       FontSize="11" FontFamily="Segoe UI"
+                                       Foreground="{StaticResource TextSecondaryBrush}"
                                        Margin="160,0,0,16"/>
 
                             <Grid Margin="0,0,0,8">
@@ -352,32 +361,36 @@
                                          Width="90"/>
                             </Grid>
                             <TextBlock Text="Leave blank to use the default location (Documents\UDC Backups)."
-                                       FontSize="11" Foreground="{StaticResource TextSecondaryBrush}"
+                                       FontSize="11" FontFamily="Segoe UI"
+                                       Foreground="{StaticResource TextSecondaryBrush}"
                                        Margin="160,0,0,0"/>
                         </StackPanel>
                     </Border>
 
-                    <!-- ── BACKUP STATUS ── -->
+                    <!-- BACKUP STATUS -->
                     <TextBlock Text="BACKUP STATUS" Style="{StaticResource SectionLabel}"/>
 
-                    <Border Background="{StaticResource CardBrush}" CornerRadius="10" Padding="24"
+                    <Border Background="{StaticResource CardBrush}" CornerRadius="12" Padding="24"
                             Margin="0,0,0,20">
                         <Border.Effect>
-                            <DropShadowEffect BlurRadius="10" ShadowDepth="1" Color="#000000" Opacity="0.06"/>
+                            <DropShadowEffect BlurRadius="18" ShadowDepth="2" Color="#000000" Opacity="0.05"/>
                         </Border.Effect>
                         <StackPanel>
                             <Border CornerRadius="8" Padding="14,11" Margin="0,0,0,12"
                                     Visibility="{Binding HasBackupReminder, Converter={StaticResource BoolToVisibility}}"
-                                    Background="#FFF3E0" BorderBrush="#FFCC80" BorderThickness="1">
+                                    Background="#FFFBEB" BorderBrush="#FCD34D" BorderThickness="1">
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="&#x26A0;" FontSize="16" Foreground="#E65100"
+                                    <TextBlock Text="&#xE7BA;" FontSize="16" FontFamily="Segoe MDL2 Assets"
+                                               Foreground="{StaticResource WarningBrush}"
                                                VerticalAlignment="Top" Margin="0,0,10,0"/>
                                     <TextBlock Text="{Binding BackupReminderMessage}"
-                                               FontSize="13" Foreground="#E65100"
+                                               FontSize="13" FontFamily="Segoe UI"
+                                               Foreground="{StaticResource WarningBrush}"
                                                TextWrapping="Wrap" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Border>
-                            <TextBlock Foreground="{StaticResource TextSecondaryBrush}" FontSize="13">
+                            <TextBlock FontSize="13" FontFamily="Segoe UI"
+                                       Foreground="{StaticResource TextSecondaryBrush}">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
                                         <Setter Property="Text" Value="Backup status is up to date."/>
@@ -393,37 +406,40 @@
                     </Border>
 
                     <!-- Save status -->
-                    <Border CornerRadius="8" Padding="14,11" Margin="0,0,0,16"
+                    <Border CornerRadius="10" Padding="14,11" Margin="0,0,0,16"
                             Visibility="{Binding SaveStatusMessage, Converter={StaticResource StringToVisibility}}">
                         <Border.Style>
                             <Style TargetType="Border">
-                                <Setter Property="Background"      Value="#E8F5E9"/>
-                                <Setter Property="BorderBrush"     Value="#A5D6A7"/>
+                                <Setter Property="Background"      Value="#F0FDF4"/>
+                                <Setter Property="BorderBrush"     Value="#86EFAC"/>
                                 <Setter Property="BorderThickness" Value="1"/>
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding SaveStatusIsError}" Value="True">
-                                        <Setter Property="Background"  Value="#FFEBEE"/>
-                                        <Setter Property="BorderBrush" Value="#EF9A9A"/>
+                                        <Setter Property="Background"  Value="#FEF2F2"/>
+                                        <Setter Property="BorderBrush" Value="#FCA5A5"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </Border.Style>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock FontSize="15" Margin="0,0,10,0" VerticalAlignment="Center">
+                            <TextBlock FontSize="14" Margin="0,0,10,0" VerticalAlignment="Center">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
-                                        <Setter Property="Text"       Value="&#x2714;"/>
+                                        <Setter Property="Text"       Value="&#xE73E;"/>
+                                        <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
                                         <Setter Property="Foreground" Value="{StaticResource SuccessBrush}"/>
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding SaveStatusIsError}" Value="True">
-                                                <Setter Property="Text"       Value="&#x26A0;"/>
+                                                <Setter Property="Text"       Value="&#xE7BA;"/>
+                                                <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
                                                 <Setter Property="Foreground" Value="{StaticResource ErrorBrush}"/>
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
                                 </TextBlock.Style>
                             </TextBlock>
-                            <TextBlock Text="{Binding SaveStatusMessage}" FontSize="13" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding SaveStatusMessage}" FontSize="13" FontFamily="Segoe UI"
+                                       VerticalAlignment="Center">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
                                         <Setter Property="Foreground" Value="{StaticResource SuccessBrush}"/>
@@ -441,36 +457,38 @@
                     <!-- Save button -->
                     <Button Command="{Binding SaveCommand}"
                             Style="{StaticResource PrimaryButton}"
-                            Content="&#x1F4BE;   Save Settings"
+                            Content="Save Settings"
                             HorizontalAlignment="Right"
                             Width="200"
                             Margin="0,0,0,28"/>
 
                 </StackPanel>
 
-                <!-- ── ACCOUNT SECURITY (all users) ── -->
+                <!-- ACCOUNT SECURITY (all users) -->
                 <TextBlock Text="ACCOUNT SECURITY" Style="{StaticResource SectionLabel}"/>
 
-                <Border Background="{StaticResource CardBrush}" CornerRadius="10" Padding="24"
+                <Border Background="{StaticResource CardBrush}" CornerRadius="12" Padding="24"
                         Margin="0,0,0,20">
                     <Border.Effect>
-                        <DropShadowEffect BlurRadius="10" ShadowDepth="1" Color="#000000" Opacity="0.06"/>
+                        <DropShadowEffect BlurRadius="18" ShadowDepth="2" Color="#000000" Opacity="0.05"/>
                     </Border.Effect>
                     <StackPanel>
 
                         <TextBlock Text="{Binding PasswordChangeForDisplay}"
-                                   FontSize="13" Foreground="{StaticResource TextSecondaryBrush}"
+                                   FontSize="13" FontFamily="Segoe UI"
+                                   Foreground="{StaticResource TextSecondaryBrush}"
                                    Margin="0,0,0,12"/>
 
-                        <!-- Default password warning — visible until password is changed -->
                         <Border Visibility="{Binding IsUsingDefaultPassword, Converter={StaticResource BoolToVisibility}}"
-                                Background="#FFF3E0" BorderBrush="#FFCC80" BorderThickness="1"
+                                Background="#FFFBEB" BorderBrush="#FCD34D" BorderThickness="1"
                                 CornerRadius="8" Padding="14,11" Margin="0,0,0,16">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="&#x26A0;" FontSize="16" Foreground="#E65100"
+                                <TextBlock Text="&#xE7BA;" FontSize="16" FontFamily="Segoe MDL2 Assets"
+                                           Foreground="{StaticResource WarningBrush}"
                                            VerticalAlignment="Center" Margin="0,0,10,0"/>
-                                <TextBlock FontSize="13" Foreground="#E65100" TextWrapping="Wrap"
-                                           VerticalAlignment="Center"
+                                <TextBlock FontSize="13" FontFamily="Segoe UI"
+                                           Foreground="{StaticResource WarningBrush}"
+                                           TextWrapping="Wrap" VerticalAlignment="Center"
                                            Text="You are using a default password. Please change it now to secure this account."/>
                             </StackPanel>
                         </Border>
@@ -506,41 +524,45 @@
                         </Grid>
 
                         <TextBlock Text="Minimum 6 characters."
-                                   FontSize="11" Foreground="{StaticResource TextSecondaryBrush}"
+                                   FontSize="11" FontFamily="Segoe UI"
+                                   Foreground="{StaticResource TextSecondaryBrush}"
                                    Margin="160,0,0,16"/>
 
                         <!-- Password change status -->
-                        <Border CornerRadius="8" Padding="14,11" Margin="0,0,0,16"
+                        <Border CornerRadius="10" Padding="14,11" Margin="0,0,0,16"
                                 Visibility="{Binding HasPwChangeStatus, Converter={StaticResource BoolToVisibility}}">
                             <Border.Style>
                                 <Style TargetType="Border">
-                                    <Setter Property="Background"      Value="#E8F5E9"/>
-                                    <Setter Property="BorderBrush"     Value="#A5D6A7"/>
+                                    <Setter Property="Background"      Value="#F0FDF4"/>
+                                    <Setter Property="BorderBrush"     Value="#86EFAC"/>
                                     <Setter Property="BorderThickness" Value="1"/>
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding PwChangeIsError}" Value="True">
-                                            <Setter Property="Background"  Value="#FFEBEE"/>
-                                            <Setter Property="BorderBrush" Value="#EF9A9A"/>
+                                            <Setter Property="Background"  Value="#FEF2F2"/>
+                                            <Setter Property="BorderBrush" Value="#FCA5A5"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
                             </Border.Style>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock FontSize="15" Margin="0,0,10,0" VerticalAlignment="Center">
+                                <TextBlock FontSize="14" Margin="0,0,10,0" VerticalAlignment="Center">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
-                                            <Setter Property="Text"       Value="&#x2714;"/>
+                                            <Setter Property="Text"       Value="&#xE73E;"/>
+                                            <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
                                             <Setter Property="Foreground" Value="{StaticResource SuccessBrush}"/>
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding PwChangeIsError}" Value="True">
-                                                    <Setter Property="Text"       Value="&#x26A0;"/>
+                                                    <Setter Property="Text"       Value="&#xE7BA;"/>
+                                                    <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
                                                     <Setter Property="Foreground" Value="{StaticResource ErrorBrush}"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
                                     </TextBlock.Style>
                                 </TextBlock>
-                                <TextBlock Text="{Binding PwChangeStatus}" FontSize="13" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding PwChangeStatus}" FontSize="13" FontFamily="Segoe UI"
+                                           VerticalAlignment="Center">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
                                             <Setter Property="Foreground" Value="{StaticResource SuccessBrush}"/>
