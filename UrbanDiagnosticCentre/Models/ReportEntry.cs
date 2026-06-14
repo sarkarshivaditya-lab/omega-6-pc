@@ -17,6 +17,10 @@ public class ReportEntry
     public string?  PriceTierName { get; set; }
     public decimal? ChargedPrice  { get; set; }
 
+    // True when this entry was inserted by a package Apply; false for manually-added tests.
+    // Determines whether this entry contributes to per-test revenue or is covered by PackageTotalPrice.
+    public bool IsFromPackage { get; set; } = false;
+
     public Report Report { get; set; } = null!;
     public TestDefinition TestDefinition { get; set; } = null!;
 }

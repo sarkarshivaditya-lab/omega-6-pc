@@ -344,7 +344,7 @@
                     <StackPanel>
                         <TextBlock Text="TEST SELECTION" Style="{StaticResource SectionHeading}"/>
 
-                        <Grid Margin="0,0,0,12">
+                        <Grid Margin="0,0,0,8">
                             <Grid.Style>
                                 <Style TargetType="Grid">
                                     <Setter Property="Visibility" Value="Visible"/>
@@ -376,6 +376,81 @@
                                 <Run Text="Total: "/>
                                 <Run Text="{Binding TotalChargeDisplay, Mode=OneWay}"/>
                             </TextBlock>
+                        </Grid>
+
+                        <!-- Package selector row: visible when not in package billing mode -->
+                        <Grid Margin="0,0,0,12">
+                            <Grid.Style>
+                                <Style TargetType="Grid">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding AvailablePackages.Count}" Value="0">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsPackageBilled}" Value="True">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Grid.Style>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="240"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Add Package:"
+                                       FontSize="13" FontWeight="SemiBold" FontFamily="Segoe UI"
+                                       Foreground="{StaticResource TextSecondaryBrush}"
+                                       VerticalAlignment="Center" Margin="0,0,12,0"/>
+                            <ComboBox Grid.Column="1"
+                                      ItemsSource="{Binding AvailablePackages}"
+                                      SelectedItem="{Binding SelectedPackage}"
+                                      DisplayMemberPath="Name"
+                                      Height="38" FontSize="13" FontFamily="Segoe UI" Padding="8,0"
+                                      ToolTip="Select a package to add all its tests at the package price"/>
+                            <Button Grid.Column="2"
+                                    Command="{Binding ApplyPackageCommand}"
+                                    Style="{StaticResource PrimaryButton}"
+                                    Content="Apply"
+                                    Height="38" Width="80"
+                                    Margin="8,0,0,0"
+                                    ToolTip="Add package tests and apply package pricing"/>
+                        </Grid>
+
+                        <!-- Package billing info row: visible when a package is applied -->
+                        <Grid Margin="0,0,0,12">
+                            <Grid.Style>
+                                <Style TargetType="Grid">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsPackageBilled}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Grid.Style>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Package:"
+                                       FontSize="13" FontWeight="SemiBold" FontFamily="Segoe UI"
+                                       Foreground="{StaticResource TextSecondaryBrush}"
+                                       VerticalAlignment="Center" Margin="0,0,12,0"/>
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding PackageBillingDisplay}"
+                                       FontSize="13" FontWeight="SemiBold" FontFamily="Segoe UI"
+                                       Foreground="{StaticResource PrimaryBrush}"
+                                       VerticalAlignment="Center"/>
+                            <Button Grid.Column="2"
+                                    Command="{Binding ClearPackageBillingCommand}"
+                                    Style="{StaticResource SecondaryButton}"
+                                    Content="Clear Package"
+                                    Height="38"
+                                    Margin="8,0,0,0"
+                                    ToolTip="Remove package billing and revert to per-test pricing"/>
                         </Grid>
 
                         <Grid Height="360">

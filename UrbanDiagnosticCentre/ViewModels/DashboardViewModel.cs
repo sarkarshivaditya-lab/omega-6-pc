@@ -64,6 +64,7 @@ public class DashboardViewModel : BaseViewModel
     public RelayCommand NavigateToSettingsCommand     { get; }
     public RelayCommand NavigateToMaintenanceCommand  { get; }
     public RelayCommand NavigateToAccountsCommand     { get; }
+    public RelayCommand NavigateToPackagesCommand     { get; }
     public RelayCommand PrintReportCommand            { get; }
     public RelayCommand EditDraftCommand              { get; }
 
@@ -84,6 +85,7 @@ public class DashboardViewModel : BaseViewModel
         NavigateToSettingsCommand    = new RelayCommand(_ => _navigationService.NavigateTo<SettingsViewModel>());
         NavigateToMaintenanceCommand = new RelayCommand(_ => _navigationService.NavigateTo<MaintenanceViewModel>());
         NavigateToAccountsCommand    = new RelayCommand(_ => _navigationService.NavigateTo<AccountsViewModel>());
+        NavigateToPackagesCommand    = new RelayCommand(_ => _navigationService.NavigateTo<PackageManagerViewModel>());
         PrintReportCommand           = new RelayCommand(ExecutePrintReport);
         EditDraftCommand             = new RelayCommand(ExecuteEditDraft);
 

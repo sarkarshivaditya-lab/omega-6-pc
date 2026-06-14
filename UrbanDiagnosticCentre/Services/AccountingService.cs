@@ -63,7 +63,8 @@ public class AccountingService
         var totalTx = _db.Reports.Count(r =>
                           !r.IsArchived &&
                           (r.Status == ReportStatus.Completed || r.Status == ReportStatus.Printed) &&
-                          r.Entries.Any(e => e.ChargedPrice.HasValue))
+                          ((r.BillingMode == BillingMode.Package && r.PackageTotalPrice.HasValue) ||
+                           (r.BillingMode == BillingMode.Normal  && r.Entries.Any(e => e.ChargedPrice.HasValue))))
                       + _db.FinancialTransactions.Count();
 
         return new AccountingSummary(
@@ -81,24 +82,39 @@ public class AccountingService
     {
         var toExclusive = to.Date.AddDays(1);
 
-        return _db.Reports
+        // Materialize reports with all data needed to compute totals in .NET.
+        // Avoids complex nested-sum SQL; keeps query simple and SQLite-safe.
+        var raw = _db.Reports
             .Where(r =>
                 !r.IsArchived &&
                 (r.Status == ReportStatus.Completed || r.Status == ReportStatus.Printed) &&
-                r.TestDate >= from.Date && r.TestDate < toExclusive &&
-                r.Entries.Any(e => e.ChargedPrice.HasValue))
+                r.TestDate >= from.Date && r.TestDate < toExclusive)
             .Select(r => new
             {
                 r.Id,
                 r.ReportCode,
-                PatientName = r.Patient.FullName,
+                PatientName       = r.Patient.FullName,
                 r.TestDate,
-                Total = r.Entries.Sum(e => e.ChargedPrice ?? 0m)
+                r.BillingMode,
+                PackageTotalPrice = r.PackageTotalPrice,
+                Entries           = r.Entries.Select(e => new { e.IsFromPackage, e.ChargedPrice })
             })
-            .Where(x => x.Total > 0)
+            .ToList();
+
+        return raw
+            .Select(r =>
+            {
+                decimal total = r.BillingMode == BillingMode.Package
+                    ? (r.PackageTotalPrice ?? 0m)
+                      + r.Entries.Where(e => !e.IsFromPackage && e.ChargedPrice.HasValue)
+                                 .Sum(e => e.ChargedPrice!.Value)
+                    : r.Entries.Where(e => e.ChargedPrice.HasValue)
+                               .Sum(e => e.ChargedPrice!.Value);
+                return (r.Id, r.ReportCode, r.PatientName, r.TestDate, total);
+            })
+            .Where(x => x.total > 0)
             .OrderByDescending(x => x.TestDate)
-            .AsEnumerable()
-            .Select(x => new IncomeEntry(x.Id, x.ReportCode, x.PatientName, x.TestDate, x.Total))
+            .Select(x => new IncomeEntry(x.Id, x.ReportCode, x.PatientName, x.TestDate, x.total))
             .ToList();
     }
 
@@ -192,14 +208,33 @@ public class AccountingService
     // ── Helpers ───────────────────────────────────────────────────────────────
 
     private decimal GetReportIncome(DateTime from, DateTime toExclusive)
-        => _db.Reports
-            .Where(r =>
-                !r.IsArchived &&
-                (r.Status == ReportStatus.Completed || r.Status == ReportStatus.Printed) &&
-                r.TestDate >= from && r.TestDate < toExclusive)
+    {
+        var baseQ = _db.Reports.Where(r =>
+            !r.IsArchived &&
+            (r.Status == ReportStatus.Completed || r.Status == ReportStatus.Printed) &&
+            r.TestDate >= from && r.TestDate < toExclusive);
+
+        // Package fixed price
+        var packageIncome = baseQ
+            .Where(r => r.BillingMode == BillingMode.Package && r.PackageTotalPrice.HasValue)
+            .Sum(r => (decimal?)r.PackageTotalPrice) ?? 0m;
+
+        // Manually-added tests billed alongside a package (IsFromPackage == false)
+        var packageManualExtras = baseQ
+            .Where(r => r.BillingMode == BillingMode.Package)
+            .SelectMany(r => r.Entries)
+            .Where(e => !e.IsFromPackage && e.ChargedPrice.HasValue)
+            .Sum(e => (decimal?)e.ChargedPrice) ?? 0m;
+
+        // Normal (non-package) reports: all entry prices
+        var normalIncome = baseQ
+            .Where(r => r.BillingMode == BillingMode.Normal)
             .SelectMany(r => r.Entries)
             .Where(e => e.ChargedPrice.HasValue)
             .Sum(e => (decimal?)e.ChargedPrice) ?? 0m;
+
+        return packageIncome + packageManualExtras + normalIncome;
+    }
 
     private decimal GetExpenseTotal(DateTime from, DateTime toExclusive)
         => _db.FinancialTransactions

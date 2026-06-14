@@ -9,9 +9,10 @@ using UrbanDiagnosticCentre.Data;
 namespace UrbanDiagnosticCentre.Data.Migrations;
 
 [DbContext(typeof(AppDbContext))]
-partial class AppDbContextModelSnapshot : ModelSnapshot
+[Migration("20260614000004_AddReportEntryPackageSource")]
+partial class AddReportEntryPackageSource
 {
-    protected override void BuildModel(ModelBuilder modelBuilder)
+    protected override void BuildTargetModel(ModelBuilder modelBuilder)
     {
 #pragma warning disable 612, 618
         modelBuilder.HasAnnotation("ProductVersion", "9.0.5");
@@ -127,7 +128,6 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
         {
             b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("INTEGER");
             b.Property<decimal?>("ChargedPrice").HasColumnType("TEXT");
-            b.Property<bool>("IsFromPackage").HasColumnType("INTEGER").HasDefaultValue(false);
             b.Property<string>("PriceTierName").HasColumnType("TEXT");
             b.Property<string>("ReferenceRangeUsed").IsRequired().HasColumnType("TEXT");
             b.Property<int>("ReportId").HasColumnType("INTEGER");

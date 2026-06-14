@@ -181,11 +181,14 @@ public class ReportService
         report.Patient.ReferringDoctor = updatedPatient.ReferringDoctor;
         report.Patient.Address         = updatedPatient.Address;
 
-        report.TestDate         = updatedReportData.TestDate;
-        report.ReportDate       = updatedReportData.ReportDate;
-        report.PriceTierName    = updatedReportData.PriceTierName;
-        report.ModifiedAt       = DateTime.Now;
-        report.ModifiedByUserId = updatedReportData.ModifiedByUserId;
+        report.TestDate            = updatedReportData.TestDate;
+        report.ReportDate          = updatedReportData.ReportDate;
+        report.PriceTierName       = updatedReportData.PriceTierName;
+        report.ModifiedAt          = DateTime.Now;
+        report.ModifiedByUserId    = updatedReportData.ModifiedByUserId;
+        report.BillingMode         = updatedReportData.BillingMode;
+        report.PackageNameSnapshot = updatedReportData.PackageNameSnapshot;
+        report.PackageTotalPrice   = updatedReportData.PackageTotalPrice;
 
         var oldEntries = report.Entries.ToList();
         _db.ReportEntries.RemoveRange(oldEntries);
@@ -227,11 +230,14 @@ public class ReportService
             report.Patient.ReferringDoctor = updatedPatient.ReferringDoctor;
             report.Patient.Address         = updatedPatient.Address;
 
-            report.TestDate         = updatedReportData.TestDate;
-            report.ReportDate       = updatedReportData.ReportDate;
-            report.PriceTierName    = updatedReportData.PriceTierName;
-            report.ModifiedAt       = DateTime.Now;
-            report.ModifiedByUserId = updatedReportData.ModifiedByUserId;
+            report.TestDate            = updatedReportData.TestDate;
+            report.ReportDate          = updatedReportData.ReportDate;
+            report.PriceTierName       = updatedReportData.PriceTierName;
+            report.ModifiedAt          = DateTime.Now;
+            report.ModifiedByUserId    = updatedReportData.ModifiedByUserId;
+            report.BillingMode         = updatedReportData.BillingMode;
+            report.PackageNameSnapshot = updatedReportData.PackageNameSnapshot;
+            report.PackageTotalPrice   = updatedReportData.PackageTotalPrice;
 
             var oldEntries = report.Entries.ToList();
             _db.ReportEntries.RemoveRange(oldEntries);

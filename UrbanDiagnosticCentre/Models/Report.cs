@@ -1,5 +1,7 @@
 namespace UrbanDiagnosticCentre.Models;
 
+public enum BillingMode { Normal, Package }
+
 public class Report
 {
     public int Id { get; set; }
@@ -19,6 +21,12 @@ public class Report
     public DateTime? PrintedAt { get; set; }
     public int PdfVersion { get; set; } = 0;
     public string? PriceTierName { get; set; }
+
+    // Package billing — non-null when the report is sold as a fixed-price bundle.
+    // Snapshots are captured at apply time; immune to later package edits or deletion.
+    public BillingMode BillingMode        { get; set; } = BillingMode.Normal;
+    public string?     PackageNameSnapshot { get; set; }
+    public decimal?    PackageTotalPrice   { get; set; }
 
     public Patient Patient { get; set; } = null!;
     public User? CreatedByUser { get; set; }

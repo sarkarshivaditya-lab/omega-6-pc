@@ -100,6 +100,31 @@ public class ReportEntryRow : BaseViewModel
 
     public bool IsPriceOverridden => _isPriceOverridden;
 
+    // True when this entry was inserted by a package Apply; false for manually-added tests.
+    // Package tests are covered by PackageTotalPrice and must never receive tier/manual pricing.
+    public bool IsFromPackage { get; private set; } = false;
+
+    public void MarkAsPackage()
+    {
+        IsFromPackage      = true;
+        _isPriceOverridden = false;
+        _chargedPrice      = null;
+        _priceEditText     = string.Empty;
+        OnPropertyChanged(nameof(ChargedPrice));
+        OnPropertyChanged(nameof(PriceDisplay));
+        OnPropertyChanged(nameof(PriceEditText));
+        OnPropertyChanged(nameof(IsPriceOverridden));
+    }
+
+    // Demotes a package entry back to a manual entry (used by ClearPackageBilling).
+    // Clears override flag so RefreshEntryPrices can apply tier pricing.
+    public void ClearPackageMembership()
+    {
+        IsFromPackage      = false;
+        _isPriceOverridden = false;
+        OnPropertyChanged(nameof(IsPriceOverridden));
+    }
+
     // Called by the VM's ResetPriceCommand; also triggered when the user clears the field.
     // The VM's OnEntryPropertyChanged will re-apply the current tier price automatically.
     public void ClearOverride()
@@ -176,6 +201,7 @@ public class ReportEntryRow : BaseViewModel
 public class PatientReportViewModel : BaseViewModel
 {
     private readonly TestDefinitionService _testService;
+    private readonly TestPackageService    _packageService;
     private readonly ReportService _reportService;
     private readonly IReportCodeService _codeService;
     private readonly IAuthService _authService;
@@ -291,11 +317,57 @@ public class PatientReportViewModel : BaseViewModel
         }
     }
 
-    // Computed running total — null when no prices are set on any entry
+    // ── Package quick-add ─────────────────────────────────────────────────────
+    public ObservableCollection<TestPackage> AvailablePackages { get; } = new();
+
+    private TestPackage? _selectedPackage;
+    public TestPackage? SelectedPackage
+    {
+        get => _selectedPackage;
+        set => SetProperty(ref _selectedPackage, value);
+    }
+
+    // ── Package billing mode ──────────────────────────────────────────────────
+    private BillingMode _billingMode        = BillingMode.Normal;
+    private string?     _packageNameSnapshot;
+    private decimal?    _packageTotalPrice;
+
+    public BillingMode BillingMode
+    {
+        get => _billingMode;
+        private set
+        {
+            if (SetProperty(ref _billingMode, value))
+            {
+                OnPropertyChanged(nameof(IsPackageBilled));
+                OnPropertyChanged(nameof(PackageBillingDisplay));
+                OnPropertyChanged(nameof(TotalCharge));
+                OnPropertyChanged(nameof(TotalChargeDisplay));
+            }
+        }
+    }
+
+    public bool IsPackageBilled => _billingMode == BillingMode.Package;
+
+    public string PackageBillingDisplay =>
+        _packageNameSnapshot is not null && _packageTotalPrice.HasValue
+            ? $"{_packageNameSnapshot}  —  ₹{_packageTotalPrice.Value:F2}"
+            : "Package applied";
+
+    // Grand total: in package mode = PackageTotalPrice + Sum(manual test prices);
+    //              in normal mode  = Sum(all entry prices).
     public decimal? TotalCharge
     {
         get
         {
+            if (_billingMode == BillingMode.Package)
+            {
+                if (!_packageTotalPrice.HasValue) return null;
+                var manualTotal = SelectedEntries
+                    .Where(e => !e.IsFromPackage && e.ChargedPrice.HasValue)
+                    .Sum(e => e.ChargedPrice!.Value);
+                return _packageTotalPrice.Value + manualTotal;
+            }
             if (SelectedEntries.All(e => e.ChargedPrice is null)) return null;
             return SelectedEntries.Sum(e => e.ChargedPrice ?? 0m);
         }
@@ -329,9 +401,12 @@ public class PatientReportViewModel : BaseViewModel
     public RelayCommand CompleteReportCommand      { get; }
     public RelayCommand NavigateToDashboardCommand { get; }
     public RelayCommand ResetPriceCommand          { get; }
+    public RelayCommand ApplyPackageCommand           { get; }
+    public RelayCommand ClearPackageBillingCommand    { get; }
 
     public PatientReportViewModel(
         TestDefinitionService testService,
+        TestPackageService    packageService,
         ReportService reportService,
         IReportCodeService codeService,
         IAuthService authService,
@@ -340,6 +415,7 @@ public class PatientReportViewModel : BaseViewModel
         int? editReportId = null)
     {
         _testService       = testService;
+        _packageService    = packageService;
         _reportService     = reportService;
         _codeService       = codeService;
         _authService       = authService;
@@ -366,11 +442,14 @@ public class PatientReportViewModel : BaseViewModel
         CompleteReportCommand      = new RelayCommand(async _ => await TrySaveAsync(ReportStatus.Completed),  _ => !IsSaving);
         NavigateToDashboardCommand = new RelayCommand(_ => _navigationService.NavigateTo<DashboardViewModel>(), _ => !IsSaving);
         ResetPriceCommand          = new RelayCommand(ExecuteResetPrice,                                      _ => !IsSaving);
+        ApplyPackageCommand           = new RelayCommand(ExecuteApplyPackage,        _ => !IsSaving);
+        ClearPackageBillingCommand    = new RelayCommand(ExecuteClearPackageBilling, _ => !IsSaving);
 
         SelectedEntries.CollectionChanged += OnEntriesChanged;
 
         LoadTests();
         LoadTiers();
+        LoadPackages();
 
         if (editReportId.HasValue)
             LoadExistingReport(editReportId.Value);
@@ -399,9 +478,11 @@ public class PatientReportViewModel : BaseViewModel
             OnPropertyChanged(nameof(TotalChargeDisplay));
         }
         else if (e.PropertyName == nameof(ReportEntryRow.IsPriceOverridden) &&
-                 sender is ReportEntryRow row && !row.IsPriceOverridden)
+                 sender is ReportEntryRow row && !row.IsPriceOverridden &&
+                 !row.IsFromPackage)
         {
-            // Override cleared (Reset button or empty field) — re-apply current tier price.
+            // Override cleared on a manual entry — re-apply current tier price.
+            // Package-member entries never receive tier pricing.
             row.ChargedPrice = _selectedTier is not null
                 ? _testService.GetPrice(row.TestDef.Id, _selectedTier)
                 : null;
@@ -429,6 +510,7 @@ public class PatientReportViewModel : BaseViewModel
     {
         foreach (var row in SelectedEntries)
         {
+            if (row.IsFromPackage) continue;    // package tests are never tier-priced
             if (row.IsPriceOverridden) continue;
             row.ChargedPrice = _selectedTier is not null
                 ? _testService.GetPrice(row.TestDef.Id, _selectedTier)
@@ -495,8 +577,21 @@ public class PatientReportViewModel : BaseViewModel
             if (entry.ChargedPrice.HasValue)
                 row.PriceEditText = entry.ChargedPrice.Value.ToString("F2", CultureInfo.InvariantCulture);
 
+            // Restore package membership. MarkAsPackage enforces ChargedPrice == null,
+            // so stale persisted prices on package entries are cleared unconditionally.
+            if (entry.IsFromPackage)
+                row.MarkAsPackage();
+
             SelectedEntries.Add(row);
         }
+
+        // Restore billing mode state
+        _billingMode         = report.BillingMode;
+        _packageNameSnapshot = report.PackageNameSnapshot;
+        _packageTotalPrice   = report.PackageTotalPrice;
+        OnPropertyChanged(nameof(BillingMode));
+        OnPropertyChanged(nameof(IsPackageBilled));
+        OnPropertyChanged(nameof(PackageBillingDisplay));
 
         RefreshAvailableTests();
         OnPropertyChanged(nameof(TotalCharge));
@@ -539,6 +634,7 @@ public class PatientReportViewModel : BaseViewModel
         if (td is null) return;
 
         var (min, max) = GetRange(td);
+        // Manually-added tests always get tier pricing (IsFromPackage stays false by default).
         var row = new ReportEntryRow(td, min, max)
         {
             ChargedPrice = _selectedTier is not null
@@ -567,6 +663,73 @@ public class PatientReportViewModel : BaseViewModel
         if (parameter is not ReportEntryRow row) return;
         row.ClearOverride();
         // OnEntryPropertyChanged detects IsPriceOverridden → false and re-applies tier price.
+    }
+
+    private void LoadPackages()
+    {
+        AvailablePackages.Clear();
+        foreach (var pkg in _packageService.GetActive())
+            AvailablePackages.Add(pkg);
+    }
+
+    private void ExecuteApplyPackage(object? _)
+    {
+        if (_selectedPackage is null) return;
+
+        var packageName  = _selectedPackage.Name;
+        var packagePrice = _selectedPackage.Price;
+
+        var existingIds = SelectedEntries.Select(e => e.TestDef.Id).ToHashSet();
+
+        // Add only tests not already present and mark them as package members.
+        // NEVER touch pre-existing manually-added entries — their prices are preserved.
+        foreach (var item in _selectedPackage.Items.OrderBy(i => i.SortOrder))
+        {
+            if (item.TestDefinition is null) continue;
+            if (existingIds.Contains(item.TestDefinitionId)) continue;
+            var (min, max) = GetRange(item.TestDefinition);
+            var row = new ReportEntryRow(item.TestDefinition, min, max);
+            row.MarkAsPackage();  // no ChargedPrice — covered by PackageTotalPrice
+            SelectedEntries.Add(row);
+        }
+
+        // Record package billing state. Grand total = PackageTotalPrice + manual extras.
+        _billingMode         = BillingMode.Package;
+        _packageNameSnapshot = packageName;
+        _packageTotalPrice   = packagePrice;
+        OnPropertyChanged(nameof(BillingMode));
+        OnPropertyChanged(nameof(IsPackageBilled));
+        OnPropertyChanged(nameof(PackageBillingDisplay));
+
+        SelectedPackage = null;
+        RefreshAvailableTests();
+        OnPropertyChanged(nameof(TotalCharge));
+        OnPropertyChanged(nameof(TotalChargeDisplay));
+    }
+
+    private void ExecuteClearPackageBilling(object? _)
+    {
+        var confirm = MessageBox.Show(
+            "Removing the package will convert package tests to individually billed tests " +
+            "using the current pricing tier. Continue?",
+            "Remove Package",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Question);
+        if (confirm != MessageBoxResult.Yes) return;
+
+        // Demote package entries back to manual so RefreshEntryPrices can tier-price them.
+        foreach (var row in SelectedEntries.Where(r => r.IsFromPackage))
+            row.ClearPackageMembership();
+
+        _billingMode         = BillingMode.Normal;
+        _packageNameSnapshot = null;
+        _packageTotalPrice   = null;
+        OnPropertyChanged(nameof(BillingMode));
+        OnPropertyChanged(nameof(IsPackageBilled));
+        OnPropertyChanged(nameof(PackageBillingDisplay));
+
+        // Re-apply tier prices to all entries (now including formerly-package entries).
+        RefreshEntryPrices();
     }
 
     private async Task TrySaveAsync(ReportStatus status)
@@ -613,14 +776,17 @@ public class PatientReportViewModel : BaseViewModel
 
         var report = new Report
         {
-            ReportCode       = _reportCode,
-            TestDate         = _testDate,
-            ReportDate       = _reportDate,
-            Status           = status,
-            CreatedAt        = DateTime.Now,
-            CreatedByUserId  = _authService.CurrentUser?.Id,
-            ModifiedByUserId = _editReportId.HasValue ? _authService.CurrentUser?.Id : null,
-            PriceTierName    = string.IsNullOrEmpty(_selectedTier) ? null : _selectedTier
+            ReportCode          = _reportCode,
+            TestDate            = _testDate,
+            ReportDate          = _reportDate,
+            Status              = status,
+            CreatedAt           = DateTime.Now,
+            CreatedByUserId     = _authService.CurrentUser?.Id,
+            ModifiedByUserId    = _editReportId.HasValue ? _authService.CurrentUser?.Id : null,
+            PriceTierName       = _billingMode == BillingMode.Normal && !string.IsNullOrEmpty(_selectedTier) ? _selectedTier : null,
+            BillingMode         = _billingMode,
+            PackageNameSnapshot = _packageNameSnapshot,
+            PackageTotalPrice   = _packageTotalPrice
         };
 
         var entries = SelectedEntries.Select(row => new ReportEntry
@@ -630,8 +796,18 @@ public class PatientReportViewModel : BaseViewModel
             ResultFlag         = row.Flag,
             ReferenceRangeUsed = row.RangeDisplay,
             PriceTierName      = row.ChargedPrice.HasValue ? _selectedTier : null,
-            ChargedPrice       = row.ChargedPrice
+            ChargedPrice       = row.ChargedPrice,
+            IsFromPackage      = row.IsFromPackage
         }).ToList();
+
+        // Defensive invariant: IsFromPackage == true → ChargedPrice must be null.
+        // Normalises any stale data that survived to this point; prevents double billing
+        // regardless of how the entry was constructed or modified during the session.
+        foreach (var entry in entries.Where(e => e.IsFromPackage))
+        {
+            entry.ChargedPrice  = null;
+            entry.PriceTierName = null;
+        }
 
         IsSaving = true;
         try

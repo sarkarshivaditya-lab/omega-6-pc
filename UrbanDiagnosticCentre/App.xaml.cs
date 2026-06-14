@@ -21,6 +21,7 @@ public partial class App : Application
     private NavigationService     _navigationService     = null!;
     private ReportCodeService     _reportCodeService     = null!;
     private TestDefinitionService _testDefinitionService = null!;
+    private TestPackageService    _testPackageService    = null!;
     private SettingsService       _settingsService       = null!;
     private ReportService         _reportService         = null!;
     private PrintService          _printService          = null!;
@@ -72,6 +73,7 @@ public partial class App : Application
         _authService           = new AuthService(_db);
         _reportCodeService     = new ReportCodeService(_db);
         _testDefinitionService = new TestDefinitionService(_db);
+        _testPackageService    = new TestPackageService(_db);
         _settingsService       = new SettingsService(_db);
         _reportService         = new ReportService(_db, _settingsService);
         _printService          = new PrintService(_reportService);
@@ -118,9 +120,12 @@ public partial class App : Application
 
         if (type == typeof(PatientReportViewModel))
             return new PatientReportViewModel(
-                _testDefinitionService, _reportService,
+                _testDefinitionService, _testPackageService, _reportService,
                 _reportCodeService, _authService, _navigationService, _settingsService,
                 _navigationService.PendingEditId);
+
+        if (type == typeof(PackageManagerViewModel))
+            return new PackageManagerViewModel(_testPackageService, _testDefinitionService, _navigationService);
 
         if (type == typeof(ReportHistoryViewModel))
             return new ReportHistoryViewModel(_reportService, _printService, _navigationService);

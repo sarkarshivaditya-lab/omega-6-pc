@@ -15,6 +15,8 @@ public class AppDbContext : DbContext
     public DbSet<BackupRecord> BackupRecords { get; set; }
     public DbSet<AppSettings>          AppSettings           { get; set; }
     public DbSet<FinancialTransaction> FinancialTransactions { get; set; }
+    public DbSet<TestPackage>     TestPackages     { get; set; }
+    public DbSet<TestPackageItem> TestPackageItems { get; set; }
 
     public AppDbContext() { }
 
@@ -87,7 +89,20 @@ public class AppDbContext : DbContext
             .HasForeignKey(r => r.ModifiedByUserId)
             .OnDelete(DeleteBehavior.Restrict);
 
+        modelBuilder.Entity<Report>()
+            .Property(r => r.BillingMode)
+            .HasConversion<string>()
+            .HasDefaultValue(BillingMode.Normal);
+
+        modelBuilder.Entity<Report>()
+            .Property(r => r.PackageTotalPrice)
+            .HasColumnType("TEXT");
+
         // ── ReportEntries ────────────────────────────────────────────────────
+        modelBuilder.Entity<ReportEntry>()
+            .Property(re => re.IsFromPackage)
+            .HasDefaultValue(false);
+
         modelBuilder.Entity<ReportEntry>()
             .Property(re => re.ResultFlag)
             .HasConversion<string>();
@@ -153,6 +168,35 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<FinancialTransaction>()
             .HasIndex(ft => ft.Type);
+
+        // ── TestPackages ─────────────────────────────────────────────────────────
+        modelBuilder.Entity<TestPackage>()
+            .Property(p => p.Description).HasDefaultValue("");
+
+        modelBuilder.Entity<TestPackage>()
+            .Property(p => p.IsActive).HasDefaultValue(true);
+
+        modelBuilder.Entity<TestPackage>()
+            .Property(p => p.Price).HasColumnType("TEXT");
+
+        modelBuilder.Entity<TestPackage>()
+            .HasIndex(p => p.Name);
+
+        // ── TestPackageItems ──────────────────────────────────────────────────
+        modelBuilder.Entity<TestPackageItem>()
+            .Property(i => i.SortOrder).HasDefaultValue(0);
+
+        modelBuilder.Entity<TestPackageItem>()
+            .HasOne(i => i.Package)
+            .WithMany(p => p.Items)
+            .HasForeignKey(i => i.PackageId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<TestPackageItem>()
+            .HasOne(i => i.TestDefinition)
+            .WithMany()
+            .HasForeignKey(i => i.TestDefinitionId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         // ── AppSettings ──────────────────────────────────────────────────────
         modelBuilder.Entity<AppSettings>()

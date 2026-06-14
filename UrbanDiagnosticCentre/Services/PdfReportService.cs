@@ -106,8 +106,12 @@ public static class PdfReportService
     // ── Content ───────────────────────────────────────────────────────────────
     private static void ComposeContent(IContainer c, Report report, AppSettings settings)
     {
-        var showPrice = report.Entries.Any(e => e.ChargedPrice.HasValue);
-        var totalCharge = showPrice ? report.Entries.Sum(e => e.ChargedPrice ?? 0m) : (decimal?)null;
+        var isPackage       = report.BillingMode == BillingMode.Package;
+        var hasManualExtras = isPackage && report.Entries.Any(e => !e.IsFromPackage && e.ChargedPrice.HasValue);
+        // Show price column for normal reports with any priced entry, or package reports with manual extras
+        var showPrice       = isPackage ? hasManualExtras : report.Entries.Any(e => e.ChargedPrice.HasValue);
+        // Normal total is only used inside the table; package total is shown in the billing block
+        var totalCharge     = (!isPackage && showPrice) ? report.Entries.Sum(e => e.ChargedPrice ?? 0m) : (decimal?)null;
 
         c.PaddingTop(16).Column(col =>
         {
@@ -137,7 +141,9 @@ public static class PdfReportService
                        {
                            InfoRow(d, "Report Code", report.ReportCode);
                            InfoRow(d, "Test Date",   report.TestDate.ToString("dd MMM yyyy, hh:mm tt"));
-                           if (!string.IsNullOrEmpty(report.PriceTierName))
+                           if (isPackage && !string.IsNullOrEmpty(report.PackageNameSnapshot))
+                               InfoRow(d, "Package", report.PackageNameSnapshot);
+                           else if (!string.IsNullOrEmpty(report.PriceTierName))
                                InfoRow(d, "Price Category", report.PriceTierName);
                        });
                    });
@@ -194,13 +200,17 @@ public static class PdfReportService
                     table.Cell().Background(bg).Padding(7).Text($"{entry.ResultValue} {td.Unit}").FontSize(10).Bold();
                     table.Cell().Background(bg).Padding(7).Text(flagText).FontSize(10).FontColor(flagColor).Bold();
                     if (showPrice)
-                        table.Cell().Background(bg).Padding(7)
-                             .Text(entry.ChargedPrice.HasValue ? entry.ChargedPrice.Value.ToString("F2") : "—")
-                             .FontSize(10);
+                    {
+                        // Package-member tests show "—" in the price column; manual tests show their price
+                        var priceText = (isPackage && entry.IsFromPackage)
+                            ? "—"
+                            : (entry.ChargedPrice.HasValue ? entry.ChargedPrice.Value.ToString("F2") : "—");
+                        table.Cell().Background(bg).Padding(7).Text(priceText).FontSize(10);
+                    }
                 }
 
-                // Total row
-                if (showPrice && totalCharge.HasValue)
+                // Total row — normal reports only; package reports show their total in the billing block
+                if (!isPackage && showPrice && totalCharge.HasValue)
                 {
                     table.Cell().ColumnSpan(4).Background("#E8EAF6").Padding(7)
                          .AlignRight().Text("Total:").FontSize(10).Bold().FontColor("#1A237E");
@@ -208,6 +218,51 @@ public static class PdfReportService
                          .Text(totalCharge.Value.ToString("F2")).FontSize(10).Bold().FontColor("#1A237E");
                 }
             });
+
+            // Package billing summary
+            if (isPackage && report.PackageTotalPrice.HasValue)
+            {
+                var manualExtraTotal = report.Entries
+                    .Where(e => !e.IsFromPackage && e.ChargedPrice.HasValue)
+                    .Sum(e => e.ChargedPrice!.Value);
+
+                col.Item().PaddingTop(12)
+                   .Background("#E8EAF6").Border(1).BorderColor("#C5CAE9").Padding(10)
+                   .Column(billing =>
+                   {
+                       billing.Item().Row(r =>
+                       {
+                           r.RelativeItem()
+                            .Text($"Package: {report.PackageNameSnapshot ?? "Package"}")
+                            .FontSize(11).Bold().FontColor("#1A237E");
+                           r.ConstantItem(120).AlignRight()
+                            .Text(report.PackageTotalPrice.Value.ToString("F2"))
+                            .FontSize(11).Bold().FontColor("#1A237E");
+                       });
+
+                       if (manualExtraTotal > 0)
+                       {
+                           billing.Item().PaddingTop(4).Row(r =>
+                           {
+                               r.RelativeItem()
+                                .Text("Additional Tests")
+                                .FontSize(10).FontColor("#424242");
+                               r.ConstantItem(120).AlignRight()
+                                .Text(manualExtraTotal.ToString("F2"))
+                                .FontSize(10).FontColor("#424242");
+                           });
+                           billing.Item().PaddingTop(6).BorderTop(1).BorderColor("#C5CAE9").PaddingTop(4).Row(r =>
+                           {
+                               r.RelativeItem()
+                                .Text("Grand Total")
+                                .FontSize(11).Bold().FontColor("#1A237E");
+                               r.ConstantItem(120).AlignRight()
+                                .Text((report.PackageTotalPrice.Value + manualExtraTotal).ToString("F2"))
+                                .FontSize(11).Bold().FontColor("#1A237E");
+                           });
+                       }
+                   });
+            }
 
             // Disclaimer + dual signature section
             var disclaimer = string.IsNullOrEmpty(settings.SignatureFooterText)
