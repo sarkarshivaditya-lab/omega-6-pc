@@ -132,7 +132,7 @@ public class SyncController : ControllerBase
             "Report"               => ApplyReport(db, entry, dict, now),
             "ReportEntry"          => ApplyReportEntry(db, entry, dict, now),
             "FinancialTransaction" => ApplyFinancialTransaction(db, entry, dict, now),
-            _                     => (false, $"Unknown entity type: {entry.EntityType}", false)
+            _                     => (Accepted: false, Reason: $"Unknown entity type: {entry.EntityType}", Retryable: false)
         };
 
         if (!conflictResult.Accepted) return conflictResult;
