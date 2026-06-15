@@ -65,7 +65,7 @@ public class AccountingService
                           (r.Status == ReportStatus.Completed || r.Status == ReportStatus.Printed) &&
                           ((r.BillingMode == BillingMode.Package && r.PackageTotalPrice.HasValue) ||
                            (r.BillingMode == BillingMode.Normal  && r.Entries.Any(e => e.ChargedPrice.HasValue))))
-                      + _db.FinancialTransactions.Count();
+                      + _db.FinancialTransactions.Count(ft => !ft.IsDeleted);
 
         return new AccountingSummary(
             TodayIncome:       todayIncome,
@@ -125,6 +125,7 @@ public class AccountingService
         var toExclusive = to.Date.AddDays(1);
         return _db.FinancialTransactions
             .Where(ft => ft.Type == TransactionType.Expense &&
+                         !ft.IsDeleted &&
                          ft.TransactionDate >= from.Date &&
                          ft.TransactionDate < toExclusive)
             .OrderByDescending(ft => ft.TransactionDate)
@@ -140,11 +141,16 @@ public class AccountingService
         _db.SaveChanges();
     }
 
+    /// <summary>
+    /// Soft-deletes the expense so synced machines learn of the deletion.
+    /// Hard-delete is disallowed for synced accounting records.
+    /// </summary>
     public void DeleteExpense(int id)
     {
         var tx = _db.FinancialTransactions.Find(id);
         if (tx is null) return;
-        _db.FinancialTransactions.Remove(tx);
+        tx.IsDeleted = true;
+        tx.DeletedAt = DateTime.UtcNow;
         _db.SaveChanges();
     }
 
@@ -239,6 +245,7 @@ public class AccountingService
     private decimal GetExpenseTotal(DateTime from, DateTime toExclusive)
         => _db.FinancialTransactions
             .Where(ft => ft.Type == TransactionType.Expense &&
+                         !ft.IsDeleted &&
                          ft.TransactionDate >= from && ft.TransactionDate < toExclusive)
             .Sum(ft => (decimal?)ft.Amount) ?? 0m;
 }

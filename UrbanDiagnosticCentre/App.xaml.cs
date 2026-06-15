@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using UrbanDiagnosticCentre.Data;
 using UrbanDiagnosticCentre.Helpers;
 using UrbanDiagnosticCentre.Services;
+using UrbanDiagnosticCentre.Sync;
 using UrbanDiagnosticCentre.ViewModels;
 using UrbanDiagnosticCentre.Views;
 
@@ -17,6 +18,7 @@ public partial class App : Application
 
     private InstallerPreparationService _installerService  = null!;
     private AppDbContext          _db                    = null!;
+    private ReceptionSyncWorker?  _syncWorker;
     private AuthService           _authService           = null!;
     private NavigationService     _navigationService     = null!;
     private ReportCodeService     _reportCodeService     = null!;
@@ -69,6 +71,18 @@ public partial class App : Application
         _db = new AppDbContext();
         _db.Database.Migrate();
         DatabaseSeeder.Seed(_db);
+
+        // Cache machine identity so sync interceptor and ReportCodeService know this machine's role.
+        var identity = _db.SyncIdentities.FirstOrDefault();
+        if (identity is not null)
+            AppDbContext.SetMachineCode(identity.MachineCode);
+
+        // Start background sync worker on Reception machines only.
+        if (identity?.MachineCode == "RCP")
+        {
+            _syncWorker = new ReceptionSyncWorker(() => new AppDbContext());
+            _syncWorker.Start();
+        }
 
         _authService           = new AuthService(_db);
         _reportCodeService     = new ReportCodeService(_db);
@@ -142,6 +156,9 @@ public partial class App : Application
         if (type == typeof(AccountsViewModel))
             return new AccountsViewModel(_accountingService, _settingsService, _authService, _navigationService);
 
+        if (type == typeof(SyncSettingsViewModel))
+            return new SyncSettingsViewModel(_db, _authService, _navigationService);
+
         throw new InvalidOperationException($"No factory registered for ViewModel: {type.Name}");
     }
 
@@ -207,6 +224,7 @@ public partial class App : Application
 
     protected override void OnExit(ExitEventArgs e)
     {
+        _syncWorker?.Stop();
         _db.Dispose();
         base.OnExit(e);
     }

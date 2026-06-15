@@ -28,6 +28,11 @@ public class Report
     public string?     PackageNameSnapshot { get; set; }
     public decimal?    PackageTotalPrice   { get; set; }
 
+    // Sync
+    public Guid SyncId { get; set; } = Guid.NewGuid();
+    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+    public string OriginMachineCode { get; set; } = string.Empty;
+
     public Patient Patient { get; set; } = null!;
     public User? CreatedByUser { get; set; }
     public User? ModifiedByUser { get; set; }

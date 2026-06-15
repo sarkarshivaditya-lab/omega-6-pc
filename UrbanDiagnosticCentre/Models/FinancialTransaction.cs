@@ -23,5 +23,11 @@ public class FinancialTransaction
     // Links auto-derived income row back to its source report
     public int?            SourceReportId  { get; set; }
 
+    // Sync — soft delete preserves accounting history across machines
+    public Guid     SyncId    { get; set; } = Guid.NewGuid();
+    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+    public bool     IsDeleted { get; set; } = false;
+    public DateTime? DeletedAt { get; set; }
+
     public User?           CreatedByUser   { get; set; }
 }

@@ -3,20 +3,21 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UrbanDiagnosticCentre.Data;
 
 namespace UrbanDiagnosticCentre.Data.Migrations;
 
 [DbContext(typeof(AppDbContext))]
-partial class AppDbContextModelSnapshot : ModelSnapshot
+[Migration("20260615000001_AddSyncIds")]
+partial class AddSyncIds
 {
-    protected override void BuildModel(ModelBuilder modelBuilder)
+    protected override void BuildTargetModel(ModelBuilder modelBuilder)
     {
 #pragma warning disable 612, 618
         modelBuilder.HasAnnotation("ProductVersion", "9.0.5");
 
-        // ── AppSettings ──────────────────────────────────────────────────────
         modelBuilder.Entity("UrbanDiagnosticCentre.Models.AppSettings", b =>
         {
             b.Property<int>("Id").ValueGeneratedNever().HasColumnType("INTEGER");
@@ -40,7 +41,6 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
             b.ToTable("AppSettings");
         });
 
-        // ── BackupRecord ─────────────────────────────────────────────────────
         modelBuilder.Entity("UrbanDiagnosticCentre.Models.BackupRecord", b =>
         {
             b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("INTEGER");
@@ -53,7 +53,6 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
             b.ToTable("BackupRecords");
         });
 
-        // ── FinancialTransaction ─────────────────────────────────────────────
         modelBuilder.Entity("UrbanDiagnosticCentre.Models.FinancialTransaction", b =>
         {
             b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("INTEGER");
@@ -81,7 +80,6 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
             b.ToTable("FinancialTransactions");
         });
 
-        // ── Patient ──────────────────────────────────────────────────────────
         modelBuilder.Entity("UrbanDiagnosticCentre.Models.Patient", b =>
         {
             b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("INTEGER");
@@ -104,7 +102,6 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
             b.ToTable("Patients");
         });
 
-        // ── Report ───────────────────────────────────────────────────────────
         modelBuilder.Entity("UrbanDiagnosticCentre.Models.Report", b =>
         {
             b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("INTEGER");
@@ -140,7 +137,6 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
             b.ToTable("Reports");
         });
 
-        // ── ReportEntry ──────────────────────────────────────────────────────
         modelBuilder.Entity("UrbanDiagnosticCentre.Models.ReportEntry", b =>
         {
             b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("INTEGER");
@@ -161,7 +157,6 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
             b.ToTable("ReportEntries");
         });
 
-        // ── TestDefinition ───────────────────────────────────────────────────
         modelBuilder.Entity("UrbanDiagnosticCentre.Models.TestDefinition", b =>
         {
             b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("INTEGER");
@@ -187,7 +182,6 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
             b.ToTable("TestDefinitions");
         });
 
-        // ── TestPackage ──────────────────────────────────────────────────────
         modelBuilder.Entity("UrbanDiagnosticCentre.Models.TestPackage", b =>
         {
             b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("INTEGER");
@@ -204,7 +198,6 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
             b.ToTable("TestPackages");
         });
 
-        // ── TestPackageItem ───────────────────────────────────────────────────
         modelBuilder.Entity("UrbanDiagnosticCentre.Models.TestPackageItem", b =>
         {
             b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("INTEGER");
@@ -220,7 +213,6 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
             b.ToTable("TestPackageItems");
         });
 
-        // ── TestPrice ────────────────────────────────────────────────────────
         modelBuilder.Entity("UrbanDiagnosticCentre.Models.TestPrice", b =>
         {
             b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("INTEGER");
@@ -237,7 +229,6 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
             b.ToTable("TestPrices");
         });
 
-        // ── User ─────────────────────────────────────────────────────────────
         modelBuilder.Entity("UrbanDiagnosticCentre.Models.User", b =>
         {
             b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("INTEGER");
@@ -253,68 +244,6 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
             b.HasIndex("SyncId").IsUnique();
             b.HasIndex("Username").IsUnique();
             b.ToTable("Users");
-        });
-
-        // ── SyncIdentity ─────────────────────────────────────────────────────
-        modelBuilder.Entity("UrbanDiagnosticCentre.Models.SyncIdentity", b =>
-        {
-            b.Property<int>("Id").ValueGeneratedNever().HasColumnType("INTEGER");
-            b.Property<string>("AdminApiBaseUrl").HasColumnType("TEXT");
-            b.Property<string>("ApiKey").HasColumnType("TEXT");
-            b.Property<DateTime>("CreatedAt").HasColumnType("TEXT");
-            b.Property<string>("MachineCode").IsRequired().HasColumnType("TEXT").HasDefaultValue("ADM");
-            b.Property<Guid>("MachineId").HasColumnType("TEXT");
-            b.HasKey("Id");
-            b.ToTable("SyncIdentities");
-        });
-
-        // ── SyncCursor ───────────────────────────────────────────────────────
-        modelBuilder.Entity("UrbanDiagnosticCentre.Models.SyncCursor", b =>
-        {
-            b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("INTEGER");
-            b.Property<string>("EntityType").IsRequired().HasColumnType("TEXT");
-            b.Property<DateTime>("LastPulledAt").HasColumnType("TEXT");
-            b.Property<DateTime>("UpdatedAt").HasColumnType("TEXT");
-            b.HasKey("Id");
-            b.HasIndex("EntityType").IsUnique();
-            b.ToTable("SyncCursors");
-        });
-
-        // ── SyncOutboxEntry ───────────────────────────────────────────────────
-        modelBuilder.Entity("UrbanDiagnosticCentre.Models.SyncOutboxEntry", b =>
-        {
-            b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("INTEGER");
-            b.Property<int>("AttemptCount").HasColumnType("INTEGER").HasDefaultValue(0);
-            b.Property<Guid>("CorrelationId").HasColumnType("TEXT");
-            b.Property<DateTime>("CreatedAt").HasColumnType("TEXT");
-            b.Property<string>("EntityType").IsRequired().HasColumnType("TEXT");
-            b.Property<Guid>("EntitySyncId").HasColumnType("TEXT");
-            b.Property<bool>("IsSent").HasColumnType("INTEGER").HasDefaultValue(false);
-            b.Property<string?>("LastError").HasColumnType("TEXT");
-            b.Property<string>("Operation").IsRequired().HasColumnType("TEXT");
-            b.Property<string>("Payload").IsRequired().HasColumnType("TEXT");
-            b.Property<DateTime?>("SentAt").HasColumnType("TEXT");
-            b.HasKey("Id");
-            b.HasIndex("CorrelationId").IsUnique();
-            b.HasIndex("IsSent");
-            b.ToTable("SyncOutboxEntries");
-        });
-
-        // ── AppSyncLogEntry ───────────────────────────────────────────────────
-        modelBuilder.Entity("UrbanDiagnosticCentre.Models.AppSyncLogEntry", b =>
-        {
-            b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("INTEGER");
-            b.Property<DateTime>("AppliedAt").HasColumnType("TEXT");
-            b.Property<Guid>("CorrelationId").HasColumnType("TEXT");
-            b.Property<string>("EntityType").IsRequired().HasColumnType("TEXT");
-            b.Property<Guid>("EntitySyncId").HasColumnType("TEXT");
-            b.Property<string>("Operation").IsRequired().HasColumnType("TEXT");
-            b.Property<string>("Payload").IsRequired().HasColumnType("TEXT");
-            b.Property<string>("SourceMachineCode").IsRequired().HasColumnType("TEXT");
-            b.HasKey("Id");
-            b.HasIndex("AppliedAt");
-            b.HasIndex("EntityType");
-            b.ToTable("AppSyncLogEntries");
         });
 
         // ── Relationships ────────────────────────────────────────────────────

@@ -21,6 +21,10 @@ public class ReportEntry
     // Determines whether this entry contributes to per-test revenue or is covered by PackageTotalPrice.
     public bool IsFromPackage { get; set; } = false;
 
+    // Sync
+    public Guid SyncId { get; set; } = Guid.NewGuid();
+    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+
     public Report Report { get; set; } = null!;
     public TestDefinition TestDefinition { get; set; } = null!;
 }

@@ -22,4 +22,8 @@ public class TestDefinition
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public bool IsArchived { get; set; } = false;
     public DateTime? ArchivedAt { get; set; }
+
+    // Sync
+    public Guid SyncId { get; set; } = Guid.NewGuid();
+    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 }

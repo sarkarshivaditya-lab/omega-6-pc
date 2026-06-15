@@ -9,5 +9,9 @@ public class TestPackage
     public bool IsActive { get; set; } = true;
     public DateTime CreatedAt { get; set; } = DateTime.Now;
 
+    // Sync
+    public Guid SyncId { get; set; } = Guid.NewGuid();
+    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+
     public List<TestPackageItem> Items { get; set; } = new();
 }

@@ -16,6 +16,10 @@ public class Patient
     public DateTime? ArchivedAt { get; set; }
     public int? CreatedByUserId { get; set; }
 
+    // Sync
+    public Guid SyncId { get; set; } = Guid.NewGuid();
+    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+
     public User? CreatedByUser { get; set; }
     public List<Report> Reports { get; set; } = new();
 }

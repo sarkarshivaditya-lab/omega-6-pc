@@ -128,6 +128,18 @@
                         </StackPanel>
                     </Button>
 
+                    <Button Style="{StaticResource GhostButton}"
+                            Command="{Binding NavigateToSyncSettingsCommand}"
+                            Margin="0,2">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE703;" FontSize="15" Width="26"
+                                       FontFamily="Segoe MDL2 Assets"
+                                       VerticalAlignment="Center"/>
+                            <TextBlock Text="Sync Settings" FontSize="13"
+                                       FontFamily="Segoe UI" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+
                     <!-- Admin-only section -->
                     <StackPanel Visibility="{Binding IsAdmin, Converter={StaticResource BoolToVisibility}}">
                         <Border Height="1" Background="#14FFFFFF" Margin="4,12,4,12"/>

@@ -37,6 +37,9 @@
             <DataTemplate DataType="{x:Type vm:PackageManagerViewModel}">
                 <views:PackageManagerView />
             </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:SyncSettingsViewModel}">
+                <views:SyncSettingsView />
+            </DataTemplate>
 
             <!-- ===== Premium Color Palette — UDC Clinical Navy/Teal ===== -->
             <SolidColorBrush x:Key="PrimaryBrush"       Color="#1952A8"/>

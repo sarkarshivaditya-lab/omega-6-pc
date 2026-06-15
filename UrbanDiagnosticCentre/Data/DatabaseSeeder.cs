@@ -8,6 +8,21 @@ public static class DatabaseSeeder
     {
         SeedUsers(db);
         SeedTestDefinitions(db);
+        SeedSyncIdentity(db);
+    }
+
+    private static void SeedSyncIdentity(AppDbContext db)
+    {
+        if (db.SyncIdentities.Any()) return;
+
+        db.SyncIdentities.Add(new SyncIdentity
+        {
+            Id          = 1,
+            MachineId   = Guid.NewGuid(),
+            MachineCode = "ADM",
+            CreatedAt   = DateTime.UtcNow
+        });
+        db.SaveChanges();
     }
 
     // ── Users ─────────────────────────────────────────────────────────────────

@@ -111,6 +111,7 @@ public class MaintenanceService
             return new MaintenanceResult(false, $"Orphan check error: {ex.Message}");
         }
     }
+    
 
     // ── Missing PDFs (in DB, file absent on disk) ─────────────────────────────
 
