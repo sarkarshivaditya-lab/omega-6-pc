@@ -8,7 +8,7 @@
         <Border Grid.Row="0" Background="{StaticResource SidebarBrush}" Height="64" Padding="24,0">
             <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="12"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                 <Button Grid.Column="0" Command="{Binding NavigateToDashboardCommand}" Style="{StaticResource GhostButton}" Content="← Dashboard" Height="40" Padding="12,0"/>
-                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="20,0"><TextBlock Text="{Binding PageTitle}" FontSize="17" FontWeight="Bold" Foreground="White"/><TextBlock Text="OMEGA 6.0 · Create a new customer entry" FontSize="11" Foreground="#7EB3F5"/></StackPanel>
+                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="20,0"><TextBlock Text="{Binding PageTitle}" FontSize="17" FontWeight="Bold" Foreground="White"/><TextBlock Text="OMEGA 6.0 · Create a new customer record" FontSize="11" Foreground="#7EB3F5"/></StackPanel>
                 <Button Grid.Column="2" Command="{Binding SaveDraftCommand}" Style="{StaticResource GhostButton}" Content="Save Draft" Height="40" Padding="16,0"/>
                 <Button Grid.Column="4" Command="{Binding CompleteReportCommand}" Style="{StaticResource PrimaryButton}" Content="Finish" Height="40" Padding="20,0"/>
             </Grid>
@@ -18,7 +18,7 @@
                 <StackPanel><TextBlock Text="CUSTOMER DETAILS" FontSize="10" FontWeight="Bold" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,14"/>
                     <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="2*"/><ColumnDefinition Width="12"/><ColumnDefinition Width="*"/><ColumnDefinition Width="12"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
                         <StackPanel><TextBlock Text="Customer Name *" Style="{StaticResource LabelText}"/><TextBox Text="{Binding FormName, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputField}"/></StackPanel>
-                        <StackPanel Grid.Column="2"><TextBlock Text="Customer Code *" Style="{StaticResource LabelText}"/><TextBox Text="{Binding FormAge, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputField}" ToolTip="Enter a numeric code from 1 to 150"/></StackPanel>
+                        <StackPanel Grid.Column="2"><TextBlock Text="Customer Code *" Style="{StaticResource LabelText}"/><TextBox Text="{Binding FormAge, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputField}" ToolTip="Enter a unique customer code"/></StackPanel>
                         <StackPanel Grid.Column="4"><TextBlock Text="Contact *" Style="{StaticResource LabelText}"/><TextBox Text="{Binding FormPhone, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputField}"/></StackPanel>
                     </Grid>
                     <Grid Margin="0,14,0,0"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="12"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
@@ -32,7 +32,7 @@
                     <StackPanel><TextBlock Text="ADD SERVICES" FontSize="10" FontWeight="Bold" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,12"/>
                         <TextBlock Text="Category" Style="{StaticResource LabelText}"/><ComboBox ItemsSource="{Binding Categories}" SelectedItem="{Binding SelectedCategory}" Height="40" Margin="0,0,0,12"/>
                         <ListBox ItemsSource="{Binding AvailableTests}" SelectedItem="{Binding SelectedAvailableTest}" Height="280"><ListBox.ItemTemplate><DataTemplate><Border Padding="8" BorderBrush="{StaticResource DividerBrush}" BorderThickness="0,0,0,1"><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock Text="{Binding TestName}" VerticalAlignment="Center"/><Button Grid.Column="1" Content="Add" Command="{Binding DataContext.AddTestCommand, RelativeSource={RelativeSource AncestorType=ListBox}}" CommandParameter="{Binding}" Style="{StaticResource RowActionButton}"/></Grid></Border></DataTemplate></ListBox.ItemTemplate></ListBox>
-                        <TextBlock Text="Create services from the Service Builder when this list is empty." FontSize="11" Foreground="{StaticResource TextSecondaryBrush}" TextWrapping="Wrap" Margin="0,12,0,0"/>
+                        <TextBlock Text="Create your own services from the Service Builder. This workspace starts empty." FontSize="11" Foreground="{StaticResource TextSecondaryBrush}" TextWrapping="Wrap" Margin="0,12,0,0"/>
                     </StackPanel>
                 </Border>
                 <Border Grid.Column="2" Background="{StaticResource CardBrush}" CornerRadius="12" BorderBrush="{StaticResource DividerBrush}" BorderThickness="1" Padding="18">
