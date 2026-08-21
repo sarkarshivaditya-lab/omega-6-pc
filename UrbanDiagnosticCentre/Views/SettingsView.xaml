@@ -23,6 +23,15 @@
                     <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="160"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><TextBlock Grid.Column="0" Text="Watermark Text" Style="{StaticResource FieldLabel}"/><TextBox Grid.Column="1" Text="{Binding WatermarkText, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputField}"/></Grid>
                 </StackPanel></Border>
             </StackPanel>
+            <TextBlock Text="SECURITY" FontSize="10" FontWeight="Bold" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,4,0,14"/>
+            <Border Background="{StaticResource CardBrush}" CornerRadius="12" Padding="24" Margin="0,0,0,20"><StackPanel>
+                <TextBlock Text="Change Password" FontSize="15" FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,14"/>
+                <Grid Margin="0,0,0,10"><Grid.ColumnDefinitions><ColumnDefinition Width="160"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><TextBlock Grid.Column="0" Text="Current Password" Style="{StaticResource FieldLabel}"/><PasswordBox x:Name="PwCurrent" Grid.Column="1" Height="44" Padding="12,10"/></Grid>
+                <Grid Margin="0,0,0,10"><Grid.ColumnDefinitions><ColumnDefinition Width="160"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><TextBlock Grid.Column="0" Text="New Password" Style="{StaticResource FieldLabel}"/><PasswordBox x:Name="PwNew" Grid.Column="1" Height="44" Padding="12,10"/></Grid>
+                <Grid Margin="0,0,0,14"><Grid.ColumnDefinitions><ColumnDefinition Width="160"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><TextBlock Grid.Column="0" Text="Confirm Password" Style="{StaticResource FieldLabel}"/><PasswordBox x:Name="PwConfirm" Grid.Column="1" Height="44" Padding="12,10"/></Grid>
+                <Border Background="#F8FAFC" CornerRadius="8" Padding="10" Margin="0,0,0,12" Visibility="{Binding PwChangeStatus, Converter={StaticResource StringToVisibility}}"><TextBlock Text="{Binding PwChangeStatus}" TextWrapping="Wrap" Foreground="{StaticResource TextSecondaryBrush}"/></Border>
+                <Button Content="Change Password" Style="{StaticResource PrimaryButton}" Click="ChangePassword_Click" Width="170" HorizontalAlignment="Left" Height="42"/>
+            </StackPanel></Border>
         </StackPanel></ScrollViewer>
     </Grid>
 </UserControl>
