@@ -6,3 +6,5 @@ obj/
 *.cache
 *.tmp
 *.DS_Store
+.claude/
+.claude-flow/
