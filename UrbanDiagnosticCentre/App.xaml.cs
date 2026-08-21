@@ -69,6 +69,21 @@ public partial class App : Application
         ErrorLoggingService.PurgeOldLogs(retentionDays: 90);
 
         _db = new AppDbContext();
+
+        // Microsoft.Data.Sqlite does not accept "journal mode" as a connection-string keyword.
+        // Remove the legacy keyword from the configured connection and apply WAL through SQLite's PRAGMA.
+        var dbConnection = _db.Database.GetDbConnection();
+        dbConnection.ConnectionString = dbConnection.ConnectionString
+            .Replace(";journal mode=WAL;", "", StringComparison.OrdinalIgnoreCase)
+            .Replace(";journal mode=WAL", "", StringComparison.OrdinalIgnoreCase);
+        _db.Database.OpenConnection();
+        using (var command = dbConnection.CreateCommand())
+        {
+            command.CommandText = "PRAGMA journal_mode=WAL;";
+            command.ExecuteNonQuery();
+        }
+        _db.Database.CloseConnection();
+
         _db.Database.Migrate();
         DatabaseSeeder.Seed(_db);
 
@@ -91,9 +106,9 @@ public partial class App : Application
         _settingsService       = new SettingsService(_db);
         _reportService         = new ReportService(_db, _settingsService);
         _printService          = new PrintService(_reportService);
-        _backupService         = new BackupService(_db, _settingsService);
-        _maintenanceService    = new MaintenanceService(_db, _settingsService);
-        _accountingService     = new AccountingService(_db);
+        _backupService         = new BackupService(_db, _navigationService);
+        _maintenanceService    = new MaintenanceService(_maintenanceService, _settingsService);
+        _accountingService     = new AccountingService(_accountingService, _settingsService, _authService, _navigationService);
         _navigationService     = new NavigationService(CreateViewModel);
 
         RunStartupDiagnostics();
