@@ -13,7 +13,6 @@ public static class DatabaseSeeder
     private static void SeedSyncIdentity(AppDbContext db)
     {
         if (db.SyncIdentities.Any()) return;
-
         db.SyncIdentities.Add(new SyncIdentity
         {
             Id = 1,
@@ -27,7 +26,6 @@ public static class DatabaseSeeder
     private static void SeedUsers(AppDbContext db)
     {
         if (db.Users.Any()) return;
-
         db.Users.AddRange(
             new User
             {
@@ -42,13 +40,12 @@ public static class DatabaseSeeder
             {
                 Username = "tech01",
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword("tech123"),
-                Role = "Technician",
-                FullName = "Technician One",
+                Role = "Operator",
+                FullName = "Workspace Operator",
                 CreatedAt = DateTime.Now,
                 IsActive = true
             }
         );
-
         db.SaveChanges();
     }
 }
