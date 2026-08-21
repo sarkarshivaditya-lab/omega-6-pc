@@ -6,6 +6,8 @@
     <Application.Resources>
         <ResourceDictionary>
 
+            <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
+
             <!-- ViewModel → View mapping (unchanged) -->
             <DataTemplate DataType="{x:Type vm:LoginViewModel}">
                 <views:LoginView />
@@ -41,7 +43,7 @@
                 <views:SyncSettingsView />
             </DataTemplate>
 
-            <!-- ===== Premium Color Palette — UDC Clinical Navy/Teal ===== -->
+            <!-- Premium Color Palette — UDC Clinical Navy/Teal -->
             <SolidColorBrush x:Key="PrimaryBrush"       Color="#1952A8"/>
             <SolidColorBrush x:Key="PrimaryDarkBrush"   Color="#0F2546"/>
             <SolidColorBrush x:Key="PrimaryLightBrush"  Color="#4A8FD8"/>
@@ -58,7 +60,7 @@
             <SolidColorBrush x:Key="SidebarTextBrush"   Color="#FFFFFF"/>
             <SolidColorBrush x:Key="DividerBrush"       Color="#E2E8F0"/>
 
-            <!-- ===== Typography ===== -->
+            <!-- Typography -->
             <Style x:Key="HeadingLarge" TargetType="TextBlock">
                 <Setter Property="FontFamily" Value="Segoe UI"/>
                 <Setter Property="FontSize"   Value="26"/>
@@ -100,7 +102,7 @@
                 <Setter Property="Margin"     Value="0,0,0,5"/>
             </Style>
 
-            <!-- ===== Input Fields ===== -->
+            <!-- Input Fields -->
             <Style x:Key="InputField" TargetType="TextBox">
                 <Setter Property="Height"            Value="44"/>
                 <Setter Property="FontFamily"        Value="Segoe UI"/>
@@ -169,7 +171,7 @@
                 </Setter>
             </Style>
 
-            <!-- ===== Primary Button ===== -->
+            <!-- Primary Button -->
             <Style x:Key="PrimaryButton" TargetType="Button">
                 <Setter Property="Height"      Value="44"/>
                 <Setter Property="FontFamily"  Value="Segoe UI"/>
@@ -205,7 +207,7 @@
                 </Setter>
             </Style>
 
-            <!-- ===== Secondary / Outline Button ===== -->
+            <!-- Secondary / Outline Button -->
             <Style x:Key="SecondaryButton" TargetType="Button">
                 <Setter Property="Height"          Value="44"/>
                 <Setter Property="FontFamily"      Value="Segoe UI"/>
@@ -241,7 +243,7 @@
                 </Setter>
             </Style>
 
-            <!-- ===== Danger Button (destructive actions) ===== -->
+            <!-- Danger Button -->
             <Style x:Key="DangerButton" TargetType="Button">
                 <Setter Property="Height"      Value="44"/>
                 <Setter Property="FontFamily"  Value="Segoe UI"/>
@@ -273,7 +275,7 @@
                 </Setter>
             </Style>
 
-            <!-- ===== Ghost Button (sidebar navigation) ===== -->
+            <!-- Ghost Button -->
             <Style x:Key="GhostButton" TargetType="Button">
                 <Setter Property="Height"          Value="44"/>
                 <Setter Property="FontFamily"      Value="Segoe UI"/>
@@ -311,7 +313,7 @@
                 </Setter>
             </Style>
 
-            <!-- ===== Stat Card ===== -->
+            <!-- Stat Card -->
             <Style x:Key="StatCard" TargetType="Border">
                 <Setter Property="Background"   Value="{StaticResource CardBrush}"/>
                 <Setter Property="CornerRadius" Value="12"/>
