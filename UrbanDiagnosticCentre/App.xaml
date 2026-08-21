@@ -243,6 +243,15 @@
                 </Setter>
             </Style>
 
+            <!-- Legacy compatibility aliases used by existing views -->
+            <Style x:Key="OutlineButton" TargetType="Button" BasedOn="{StaticResource SecondaryButton}"/>
+            <Style x:Key="RowActionButton" TargetType="Button" BasedOn="{StaticResource SecondaryButton}">
+                <Setter Property="Height" Value="32"/>
+                <Setter Property="FontSize" Value="11"/>
+                <Setter Property="Padding" Value="10,0"/>
+                <Setter Property="MinWidth" Value="60"/>
+            </Style>
+
             <!-- Danger Button -->
             <Style x:Key="DangerButton" TargetType="Button">
                 <Setter Property="Height"      Value="44"/>
