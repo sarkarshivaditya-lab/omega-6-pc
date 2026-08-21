@@ -157,7 +157,10 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<AppSettings>().Property(s => s.ConsultantPathologistName).HasDefaultValue("");
 
         modelBuilder.Entity<SyncIdentity>().Property(s => s.Id).ValueGeneratedNever();
+        modelBuilder.Entity<SyncIdentity>().Property(s => s.MachineCode).HasDefaultValue("ADM");
         modelBuilder.Entity<SyncCursor>().HasIndex(c => c.EntityType).IsUnique();
+        modelBuilder.Entity<SyncOutboxEntry>().Property(o => o.AttemptCount).HasDefaultValue(0);
+        modelBuilder.Entity<SyncOutboxEntry>().Property(o => o.IsSent).HasDefaultValue(false);
         modelBuilder.Entity<SyncOutboxEntry>().HasIndex(o => o.CorrelationId).IsUnique();
         modelBuilder.Entity<SyncOutboxEntry>().HasIndex(o => o.IsSent);
         modelBuilder.Entity<AppSyncLogEntry>().HasIndex(l => l.AppliedAt);
