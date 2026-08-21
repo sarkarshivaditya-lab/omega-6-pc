@@ -60,8 +60,8 @@ public class AppDbContext : DbContext
         var dbFolder = Path.Combine(folder, "UrbanDiagnosticCentre");
         Directory.CreateDirectory(dbFolder);
         var dbPath = Path.Combine(dbFolder, "udc.db");
-        // WAL mode: concurrent reads while a writer is active (required for SyncService co-access).
-        options.UseSqlite($"Data Source={dbPath};journal mode=WAL;");
+        // SQLite journal mode is configured at startup using PRAGMA so the connection string remains provider-compatible.
+        options.UseSqlite($"Data Source={dbPath}");
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
