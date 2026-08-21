@@ -106,7 +106,7 @@ public partial class App : Application
         _settingsService       = new SettingsService(_db);
         _reportService         = new ReportService(_db, _settingsService);
         _printService          = new PrintService(_reportService);
-        _backupService         = new BackupService(_db, _navigationService);
+        _backupService         = new BackupService(_db, _settingsService);
         _maintenanceService    = new MaintenanceService(_maintenanceService, _settingsService);
         _accountingService     = new AccountingService(_accountingService, _settingsService, _authService, _navigationService);
         _navigationService     = new NavigationService(CreateViewModel);
